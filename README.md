@@ -2,7 +2,7 @@
 
 
 
-### Prerequisites
+## Prerequisites
 
 1. **Rust**: Ensure you have Rust installed. You can install Rust using `rustup`:
 
@@ -11,29 +11,39 @@
    ```
 
 2.  **Bun**:
-   ```
-   curl https://bun.sh/install | bash
-   ```
 
+    ```bash
+    curl https://bun.sh/install | bash
+    ```
 
-4. **Tauri CLI**:
-   ```
+3. **Tauri CLI**:
+
+   ```shell
    bun install -g @tauri-apps/cli
+   cargo install tauri-cli
+
    ```
 
-### Setting Up the Project
+## Recommended IDE Setup
+
+[VS Code](https://code.visualstudio.com/)
+ + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+ + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode)
+ + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+
+## Setting up the Project
 
 1. Clone the Repository:
-   ```bash
+   ```shell
    git clone https://github.com/MarcMouries/ServiceNowAnywhere.git
    cd ServiceNowAnywhere
    ```
-   
+
 2. Install Dependencies:
 
    ```bash
-cd src
-bun install
+   cd src
+   bun install
    ```
 
 
