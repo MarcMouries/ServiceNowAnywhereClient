@@ -10,19 +10,27 @@
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
 
-2.  **Bun**: ```curl https://bun.sh/install | bash```
+2.  **Bun**:
+   ```
+   curl https://bun.sh/install | bash
+   ```
 
 
-3. **Tauri CLI**: ```bun install -g @tauri-apps/cli```
+4. **Tauri CLI**:
+   ```
+   bun install -g @tauri-apps/cli
+   ```
 
 ### Setting Up the Project
 
 1. Clone the Repository:
    ```bash
-git clone https://github.com/yourusername/ServiceNowAnywhere.git
-cd ServiceNowAnywhere
+   git clone https://github.com/MarcMouries/ServiceNowAnywhere.git
+   cd ServiceNowAnywhere
    ```
+   
 2. Install Dependencies:
+
    ```bash
 cd src
 bun install
