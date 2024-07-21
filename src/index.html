@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ServiceNow Anywhere</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <img src="/assets/servicenow-logo.svg" class="logo" alt="ServiceNow logo" />
+      <div class="login-wrapper">
+        <div class="login-form">
+          <form name="loginPage" id="loginPage" action="login.do" method="post">
+            <input name="sysparm_ck" id="sysparm_ck" type="hidden" value="608c5bc5332b4a504890955a7e5c7b4db94c3d6a5d10db834cc84fe233280b5673c507c2">
+            <h1 class="sr-only row">Log in</h1>
+            <div class="login-form-field">
+              <label class="control-label" for="user_name">User name</label>
+              <input type="text" class="form-control" id="user_name" name="user_name" value="" autocomplete="off">
+            </div>
+            <div class="login-form-field">
+              <label class="control-label" for="user_password">Password</label>
+              <p id="btnDescription" class="sr-only" aria-live="polite">Password hidden</p>
+              <div class="input-group password-group">
+                <input class="form-control" type="password" id="user_password" name="user_password" autocomplete="off">
+                <span class="input-group-btn">
+                  <button id="mask_icon" type="button" class="btn btn-default icon-preview input-group-append mask_btn sn-tooltip-basic" aria-label="Show Password" data-original-title="Show password">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            <button name="not_important" id="sysverb_login" class="btn btn-primary login" type="submit">Log in</button>
+            <input type="hidden" id="ni.nolog.user_password" name="ni.nolog.user_password" value="true">
+            <input type="hidden" id="ni.noecho.user_name" name="ni.noecho.user_name" value="true">
+            <input type="hidden" id="ni.noecho.user_password" name="ni.noecho.user_password" value="true">
+            <input type="hidden" id="screensize" name="screensize" value="1024x1366">
+            <input type="hidden" id="sys_action" name="sys_action" value="none">
+            <input type="hidden" name="sysparm_login_url" value="welcome.do">
+          </form>
+          <div id="error-msg" class="error-message"></div>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

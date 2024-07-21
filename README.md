@@ -19,9 +19,7 @@
 3. **Tauri CLI**:
 
    ```shell
-   bun install -g @tauri-apps/cli
    cargo install tauri-cli
-
    ```
 
 ## Recommended IDE Setup
@@ -42,7 +40,6 @@
 2. Install Dependencies:
 
    ```bash
-   cd src
    bun install
    ```
 
