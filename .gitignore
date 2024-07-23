@@ -9,7 +9,7 @@ lerna-debug.log*
 
 # ENV VARIABLES
 .env
-
+.env.test
 
 node_modules
 dist
