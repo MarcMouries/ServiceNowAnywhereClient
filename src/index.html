@@ -7,9 +7,15 @@
     <title>ServiceNow Anywhere</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <script type="module" src="/main.js" defer></script>
+    <script type="module" src="/login.js" defer></script>
+    <script type="module" src="/online-status.js"></script>
+
   </head>
 
   <body>
+     <!-- ONLINE STATUS -->
+    <online-status></online-status>
+
     <div class="container">
       <img src="/assets/servicenow-logo.svg" class="logo" alt="ServiceNow logo" />
       <div class="login-wrapper">
@@ -34,11 +40,14 @@
               </div>
             </div>
 
-            <button name="not_important" id="sysverb_login" class="btn btn-primary login" type="submit">Log in</button>
+            <button id="login_button_1" class="btn btn-primary login" type="submit">Log in</button>
+
+            <button id="login_button_2" class="btn btn-primary login">Log in with ServiceNow</button>
+
             <input type="hidden" id="ni.nolog.user_password" name="ni.nolog.user_password" value="true">
             <input type="hidden" id="ni.noecho.user_name" name="ni.noecho.user_name" value="true">
             <input type="hidden" id="ni.noecho.user_password" name="ni.noecho.user_password" value="true">
-            <input type="hidden" id="screensize" name="screensize" value="1024x1366">
+            <input type="hidden" id="screensize" name="screensize" value="1024x800">
             <input type="hidden" id="sys_action" name="sys_action" value="none">
             <input type="hidden" name="sysparm_login_url" value="welcome.do">
           </form>
