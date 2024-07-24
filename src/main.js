@@ -3,33 +3,18 @@ const { invoke } = window.__TAURI__.core;
 window.NOW_ANYWHERE = {};
 
 async function loadEnvVars() {
-  const [clientId, clientSecret, redirectUri, servicenowUrl, username, password] = await invoke('get_env_vars');
+  const [clientId, clientSecret, redirectUri, servicenowUrl, username, password]
+   = await invoke('get_env_vars');
 
-  // Print environment variables to console
-  console.log('CLIENT_ID:', clientId);
-  console.log('CLIENT_SECRET:', clientSecret);
-  console.log('REDIRECT_URI:', redirectUri);
-  console.log('SERVICENOW_URL:', servicenowUrl);
-  console.log('USERNAME:', username);
-  console.log('PASSWORD:', password);
+  console.log('CLIENT_ID......:', clientId);
+  console.log('CLIENT_SECRET..:', clientSecret);
+  console.log('REDIRECT_URI...:', redirectUri);
+  console.log('SERVICENOW_URL.:', servicenowUrl);
+  console.log('USERNAME..:', username);
+  console.log('PASSWORD..:', password);
 
   window.NOW_ANYWHERE = { clientId, clientSecret, redirectUri, servicenowUrl, username, password };
 }
-
-
-// CHECK ONLINE STATUS
-function updateOnlineStatus() {
-  const onlineStatus = navigator.onLine ? "online" : "offline";
-  console.log(`User is currently ${onlineStatus}`);
-  document.getElementById('online-status').textContent = `You are currently ${onlineStatus}`;
-}
-
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
-
-
-
-
 
 async function fetchToken(code) {
   try {
@@ -65,8 +50,6 @@ async function greet() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-
-  updateOnlineStatus(); // Initial check when the application starts
 
   await loadEnvVars();
   const envVars = window.NOW_ANYWHERE;
