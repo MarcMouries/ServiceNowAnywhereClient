@@ -5,18 +5,13 @@ use dotenv::dotenv;
 use std::env;
 use std::path::Path;
 
-fn load_env() {
+mod date_util;
+
+fn load_env() -> String {
     dotenv().ok();
 
-    let mode = if cfg!(debug_assertions) {
-        "development"
-    } else {
-        "production"
-    };
-
-    println!("Running in {} mode", mode);
-
-    if mode == "development" {
+    let running_mode = if cfg!(debug_assertions) { "Development" } else { "Production" };
+    if running_mode == "Development" {
         println!("Loading .env.test file");
         if Path::new("../.env.test").exists() {
             dotenv::from_filename(".env.test").ok();
@@ -24,11 +19,12 @@ fn load_env() {
             println!("Error: .env.test file not found");
         }
     }
+    running_mode.to_string()
 }
 
 #[tauri::command]
-fn get_env_vars() -> Result<(String, String, String, String, String, String), String> {
-    load_env();
+fn initialize_app() -> Result<(String, String, String, String, String, String), String> {
+    let running_mode = load_env();
     let client_id = env::var("CLIENT_ID").map_err(|e| e.to_string())?;
     let client_secret = env::var("CLIENT_SECRET").map_err(|e| e.to_string())?;
     let redirect_uri = env::var("REDIRECT_URI").map_err(|e| e.to_string())?;
@@ -36,13 +32,30 @@ fn get_env_vars() -> Result<(String, String, String, String, String, String), St
     let username = env::var("USERNAME").unwrap_or_default();
     let password = env::var("PASSWORD").unwrap_or_default();
 
-    // Print the environment variables to the console
-    println!("CLIENT_ID: {}", client_id);
-    println!("CLIENT_SECRET: {}", client_secret);
-    println!("REDIRECT_URI: {}", redirect_uri);
-    println!("SERVICENOW_URL: {}", servicenow_url);
-    println!("USERNAME: {}", username);
-    println!("PASSWORD: {}", password);
+
+    println!(" ");
+    println!("────────────────────────────────────────────────────────────────────────");
+    const LABEL_WIDTH: usize = 16;
+    println!("{:<LABEL_WIDTH$}{}", "App Name:", "ServiceNow Anywhere");
+    println!("{:<LABEL_WIDTH$}{}", "Started on:", date_util::get_formatted_date_time());
+    println!("{:<LABEL_WIDTH$}{}", "Running mode:", running_mode);
+
+
+    println!("{:<LABEL_WIDTH$}{}", "CLIENT_ID:", client_id);
+    println!("{:<LABEL_WIDTH$}{}", "CLIENT_SECRET:", client_secret);
+    println!("{:<LABEL_WIDTH$}{}", "REDIRECT_URI:", redirect_uri);
+    println!("{:<LABEL_WIDTH$}{}", "SERVICENOW_URL:", servicenow_url);
+    println!("{:<LABEL_WIDTH$}{}", "USERNAME:", username);
+    println!("{:<LABEL_WIDTH$}{}", "PASSWORD:", password);
+    // Print the current working directory for debugging purposes
+    if let Ok(current_dir) = env::current_dir() {
+        println!("{:<LABEL_WIDTH$}{:?}", "Current dir:", current_dir);
+    } else {
+        println!("Error: Unable to get current directory");
+    }
+    println!("────────────────────────────────────────────────────────────────────────");
+
+
 
     Ok((
         client_id,
@@ -61,18 +74,9 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
-    println!("────────────────────────────────────");
-    println!(" ");
-    // Print the current working directory for debugging purposes
-    if let Ok(current_dir) = env::current_dir() {
-        println!("Current directory: {:?}", current_dir);
-    } else {
-        println!("Error: Unable to get current directory");
-    }
-
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![greet, get_env_vars])
+        .invoke_handler(tauri::generate_handler![greet, initialize_app])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
