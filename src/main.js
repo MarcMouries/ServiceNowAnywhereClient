@@ -2,9 +2,9 @@ const { invoke } = window.__TAURI__.core;
 
 window.NOW_ANYWHERE = {};
 
-async function loadEnvVars() {
+async function initializeApp() {
   const [clientId, clientSecret, redirectUri, servicenowUrl, username, password]
-   = await invoke('get_env_vars');
+  = await invoke('initialize_app');
 
   console.log('CLIENT_ID......:', clientId);
   console.log('CLIENT_SECRET..:', clientSecret);
@@ -51,7 +51,7 @@ async function greet() {
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-  await loadEnvVars();
+  await initializeApp();
   const envVars = window.NOW_ANYWHERE;
   document.getElementById('user_name').value = envVars.username || '';
   document.getElementById('user_password').value = envVars.password || '';
