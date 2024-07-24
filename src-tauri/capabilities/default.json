@@ -12,7 +12,6 @@
     "resources:default",
     "shell:allow-open",
     "tray:default",
-    "websocket:default",
     "window:default"
   ]
 }
