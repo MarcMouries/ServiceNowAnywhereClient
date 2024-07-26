@@ -3,7 +3,7 @@ import { mkdir } from "node:fs/promises";
 import { join } from "path";
 const { file: bunFile, write: bunWrite } = Bun;
 
-const files = ["*.css", "*.html"];
+const files = [".css", ".html", ".svg"];
 const source = './src';
 const destination = './dist';
 
@@ -17,10 +17,20 @@ async function createDestinationDir(dest) {
     }
 }
 
-// Function to get all files in a directory with specific extensions
-async function getFilesWithExtensions(dir, exts) {
-    const allFiles = await readdir(dir);
-    return allFiles.filter(file => exts.some(ext => file.endsWith(ext.replace('*', ''))));
+// Function to get all files in a directory and its subdirectories with specific extensions
+async function getFilesWithExtensions(dir, exts, baseDir = '') {
+    let results = [];
+    const list = await readdir(dir, { withFileTypes: true });
+    for (const file of list) {
+        const filePath = join(dir, file.name);
+        if (file.isDirectory()) {
+            const subResults = await getFilesWithExtensions(filePath, exts, join(baseDir, file.name));
+            results = results.concat(subResults);
+        } else if (exts.some(ext => file.name.endsWith(ext.replace('*', '')))) {
+            results.push(join(baseDir, file.name));
+        }
+    }
+    return results;
 }
 
 // Function to copy files
