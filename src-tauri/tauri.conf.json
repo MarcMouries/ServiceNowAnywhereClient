@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "identifier": "net.mouries.dev",
   "build": {
-    "frontendDist": "../src"
+    "frontendDist": "../dist/"
+
   },
   "app": {
     "withGlobalTauri": true,
