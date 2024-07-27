@@ -50,38 +50,43 @@ async function greet() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-
   await initializeApp();
   const envVars = window.NOW_ANYWHERE;
-  document.getElementById('user_name').value = envVars.username || '';
-  document.getElementById('user_password').value = envVars.password || '';
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
-  const state = urlParams.get('state');
+  const usernameInput = document.getElementById('user_name');
+  const passwordInput = document.getElementById('user_password');
 
-  if (code) {
-    fetchToken(code);
-  }
+  if (usernameInput && passwordInput) {
+    usernameInput.value = envVars.username || '';
+    passwordInput.value = envVars.password || '';
 
-  document.getElementById('login_button_1').addEventListener('click', (e) => {
-    e.preventDefault();
-    greet();
-  });
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
 
-  document.getElementById("mask_icon").addEventListener("click", function (e) {
-    e.preventDefault();
-    const passwordField = document.getElementById("user_password");
-    const icon = this.querySelector("i");
-    const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
-    passwordField.setAttribute("type", type);
-
-    if (type === "password") {
-      icon.classList.remove("fa-eye-slash");
-      icon.classList.add("fa-eye");
-    } else {
-      icon.classList.remove("fa-eye");
-      icon.classList.add("fa-eye-slash");
+    if (code) {
+      fetchToken(code);
     }
-  });
+
+    document.getElementById('login_button_1').addEventListener('click', (e) => {
+      e.preventDefault();
+      greet();
+    });
+
+    document.getElementById("mask_icon").addEventListener("click", function (e) {
+      e.preventDefault();
+      const passwordField = document.getElementById("user_password");
+      const icon = this.querySelector("i");
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+
+      if (type === "password") {
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      } else {
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      }
+    });
+  }
 });

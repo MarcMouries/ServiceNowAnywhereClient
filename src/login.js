@@ -56,9 +56,15 @@ async function loginWithBasicAuth(username, password) {
   }
 }
 
-document.getElementById('login_button').addEventListener('click', async (e) => {
-  e.preventDefault();
-  const username =  document.getElementById('user_name').value;
-  const password = document.getElementById('user_password').value;
-  await loginWithBasicAuth(username, password);
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const loginButton = document.getElementById('login_button');
+  if (loginButton) {
+    loginButton.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('user_name').value;
+      const password = document.getElementById('user_password').value;
+      await loginWithBasicAuth(username, password);
+    });
+  }
 });
