@@ -1,5 +1,3 @@
-const { invoke } = window.__TAURI__.core;
-
 async function loginWithBasicAuth(username, password) {
   console.log('loginWithBasicAuth');
 
@@ -58,7 +56,7 @@ async function loginWithBasicAuth(username, password) {
   }
 }
 
-document.getElementById('login_button_2').addEventListener('click', async (e) => {
+document.getElementById('login_button').addEventListener('click', async (e) => {
   e.preventDefault();
   const username =  document.getElementById('user_name').value;
   const password = document.getElementById('user_password').value;
