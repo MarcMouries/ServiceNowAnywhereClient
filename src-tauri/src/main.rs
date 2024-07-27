@@ -4,13 +4,21 @@
 use dotenv::dotenv;
 use std::env;
 use std::path::Path;
+use tauri::{
+  menu::{MenuBuilder, MenuItemBuilder},
+  tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+};
 
 mod date_util;
 
 fn load_env() -> String {
     dotenv().ok();
 
-    let running_mode = if cfg!(debug_assertions) { "Development" } else { "Production" };
+    let running_mode = if cfg!(debug_assertions) {
+        "Development"
+    } else {
+        "Production"
+    };
     if running_mode == "Development" {
         println!("Loading .env.test file");
         if Path::new("../.env.test").exists() {
@@ -32,14 +40,16 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
     let username = env::var("USERNAME").unwrap_or_default();
     let password = env::var("PASSWORD").unwrap_or_default();
 
-
     println!(" ");
     println!("────────────────────────────────────────────────────────────────────────");
     const LABEL_WIDTH: usize = 16;
     println!("{:<LABEL_WIDTH$}{}", "App Name:", "ServiceNow Anywhere");
-    println!("{:<LABEL_WIDTH$}{}", "Started on:", date_util::get_formatted_date_time());
+    println!(
+        "{:<LABEL_WIDTH$}{}",
+        "Started on:",
+        date_util::get_formatted_date_time()
+    );
     println!("{:<LABEL_WIDTH$}{}", "Running mode:", running_mode);
-
 
     println!("{:<LABEL_WIDTH$}{}", "CLIENT_ID:", client_id);
     println!("{:<LABEL_WIDTH$}{}", "CLIENT_SECRET:", client_secret);
@@ -54,8 +64,6 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
         println!("Error: Unable to get current directory");
     }
     println!("────────────────────────────────────────────────────────────────────────");
-
-
 
     Ok((
         client_id,
