@@ -13,12 +13,12 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0;
+  padding: 0;
 }
 nav h1 {
   color: white;
   font-size: 1.5em;
-  margin: 20px 0;
+  margin: 1rem;
 }
 section {
   flex: 1;
