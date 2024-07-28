@@ -1,10 +1,14 @@
+// src/main.js
+import { LOG_STYLE } from './LogStyles';
+
 const { invoke } = window.__TAURI__.core;
 
 window.NOW_ANYWHERE = {};
 
 async function initializeApp() {
+  console.log('%c⑭ Initializing App', LOG_STYLE);
   const [clientId, clientSecret, redirectUri, servicenowUrl, username, password]
-  = await invoke('initialize_app');
+    = await invoke('initialize_app');
 
   console.log('CLIENT_ID......:', clientId);
   console.log('CLIENT_SECRET..:', clientSecret);
@@ -50,6 +54,7 @@ async function greet() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+  console.log('%c⑮ DOM Content Loaded in main.js', LOG_STYLE);
   await initializeApp();
   const envVars = window.NOW_ANYWHERE;
 
@@ -67,26 +72,5 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (code) {
       fetchToken(code);
     }
-
-    document.getElementById('login_button_1').addEventListener('click', (e) => {
-      e.preventDefault();
-      greet();
-    });
-
-    document.getElementById("mask_icon").addEventListener("click", function (e) {
-      e.preventDefault();
-      const passwordField = document.getElementById("user_password");
-      const icon = this.querySelector("i");
-      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
-      passwordField.setAttribute("type", type);
-
-      if (type === "password") {
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-      } else {
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-      }
-    });
   }
 });
