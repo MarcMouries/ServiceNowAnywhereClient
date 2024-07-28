@@ -1,5 +1,8 @@
 // src/EventTypes.ts
-export const EVENT_USER_AUTHENTICATED = 'userAuthenticated';
-export const EVENT_AUTH_FAILED = 'authFailed';
-export const EVENT_USER_APPS_FETCHED = 'userAppsFetched';
-export const EVENT_APP_SELECTED = 'appSelected';
+export const EVENT_SYS_AUTHENTICATED_USER = 'EVENT_SYS_AUTHENTICATED_USER';
+export const EVENT_AUTH_FAILED            = 'EVENT_AUTH_FAILED';
+export const EVENT_SYS_FETCHED_USER_APPS  = 'EVENT_SYS_FETCHED_USER_APPS_';
+export const EVENT_USER_CLICKED_ON_APP    = 'EVENT_USER_CLICKED_ON_APP';
+export const EVENT_RECORD_LIST_UPDATED    = 'EVENT_RECORD_LIST_UPDATED';
+
+
