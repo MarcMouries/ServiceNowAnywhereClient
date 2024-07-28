@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "tauri": "tauri",
-    "build": "bun build ./src/index.js --outfile=./dist/app.js && bun run copy-assets.js"
+    "build": "bun build ./src/index.js --outfile=./dist/bundle.js.js && bun run copy-assets.js"
   },
   "devDependencies": {
     "@tauri-apps/cli": ">=2.0.0-beta.0"
