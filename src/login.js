@@ -1,70 +1,39 @@
-async function loginWithBasicAuth(username, password) {
-  console.log('loginWithBasicAuth');
-
-  const credentials = btoa(`${username}:${password}`);
-  console.log('credentials', credentials);
-
-  try {
-    const { servicenowUrl } = window.NOW_ANYWHERE;
-    const table = "sys_user";
-    const sysparm_fields = "name,email,sys_id";
-    const sysparm_limit = 1;
-
-    const url = `${servicenowUrl}/api/now/table/${table}?sysparm_query=user_name=${username}&sysparm_fields=${encodeURIComponent(sysparm_fields)}&sysparm_limit=${sysparm_limit}`;
-    console.log('url', url);
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
-
-    if (response.ok) {
-      const data = await response.json();
-      const user = {
-        name: data.result[0].name,
-        email: data.result[0].email,
-        sys_id: data.result[0].sys_id,
-        authToken: credentials
-      };
-      console.log('User data:', user);
-
-      // Save to window.NOW_ANYWHERE
-      window.NOW_ANYWHERE.user = user;
-
-      // Save to local storage
-      localStorage.setItem('user', JSON.stringify(user));
-
-      document.getElementById('error-msg').textContent = `Logged in successfully. User email: ${user.email}`;
-
-      // Redirect to workspace
-      window.location.href = 'workspace.html';
-    } else {
-      const errorText = await response.text();
-      console.error('Login failed:', errorText);
-      document.getElementById('error-msg').textContent = `Login failed: ${errorText}`;
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    document.getElementById('error-msg').textContent = `Error: ${error.message}`;
-  }
-}
-
+// src/login.js
+import { authenticateUser } from './dataService';
+import { LOG_STYLE } from './LogStyles';
+import { EVENT_AUTH_FAILED } from './EventTypes';
+import { EventEmitter } from './EventEmitter';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log('%c⑪ DOM Content Loaded', LOG_STYLE);
   const loginButton = document.getElementById('login_button');
   if (loginButton) {
     loginButton.addEventListener('click', async (e) => {
       e.preventDefault();
+      console.log('%c⑫ User clicked on log in', LOG_STYLE);
       const username = document.getElementById('user_name').value;
       const password = document.getElementById('user_password').value;
-      await loginWithBasicAuth(username, password);
+      await authenticateUser(username, password);
+    });
+
+    document.getElementById("mask_icon").addEventListener("click", function (e) {
+      e.preventDefault();
+      const passwordField = document.getElementById("user_password");
+      const icon = this.querySelector("i");
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+
+      if (type === "password") {
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      } else {
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      }
     });
   }
+
+  EventEmitter.on(EVENT_AUTH_FAILED, (message) => {
+    document.getElementById('error-msg').textContent = message;
+  });
 });
