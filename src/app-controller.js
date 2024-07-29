@@ -2,7 +2,8 @@
 import { Model } from "./app-model";
 import { authenticateUser, fetchUserApps, fetchData } from "./dataService";
 import { LOG_STYLE } from "./LogStyles";
-import { EVENT_SYS_AUTHENTICATED_USER, EVENT_AUTH_FAILED, EVENT_SYS_FETCHED_USER_APPS, EVENT_USER_CLICKED_ON_APP } from './EventTypes';
+import { EVENT_SYS_AUTHENTICATED_USER, EVENT_AUTH_FAILED, EVENT_SYS_FETCHED_USER_APPS, 
+  EVENT_USER_CLICKED_ON_APP, EVENT_USER_CLICKED_RECORD_ROW, EVENT_USER_CLICKED_NEW_RECORD_BUTTON } from './EventTypes';
 import { EventEmitter } from "./EventEmitter";
 
 const model = new Model();
@@ -42,4 +43,12 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (dataName) => {
   console.log(`%c⑧ Handling data selection: ${dataName}`, LOG_STYLE);
   const selectedData = await fetchData(dataName);
   model.setItemRecordList(dataName, selectedData);
+});
+
+EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
+  console.log(`%cUSER_CLICKED_NEW_RECORD_BUTTON: ${appName}`, 'color: white; background: darkblue;');
+});
+
+EventEmitter.on(EVENT_USER_CLICKED_RECORD_ROW, ({ appName, rowIndex }) => {
+  console.log(`%cUSER_CLICKED_RECORD_ROW: ${appName}, Row Index: ${rowIndex}`, 'color: white; background: darkblue;');
 });
