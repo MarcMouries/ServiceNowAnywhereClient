@@ -26,7 +26,9 @@ class AppNav extends HTMLElement {
     const style = document.createElement('style');
     style.textContent = `
     @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
-
+    * {
+      box-sizing: border-box;
+    }
     :host {
       display: flex;
       height: 100vh;
@@ -52,15 +54,14 @@ class AppNav extends HTMLElement {
         width: 100%;
       }
       li {
-        color: white;
-        margin: 10px 0;
-        padding: 10px;
         border-radius: 5px;
+        color: white;
         cursor: pointer;
+        padding: 6px 8px;
         text-align: left;
         transition: background 0.3s ease;
       }
-      li:hover {
+      li:hover, li.active {
         background: #6A65C5;
       }
       li i {
