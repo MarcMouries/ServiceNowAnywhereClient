@@ -1,0 +1,20 @@
+/* global-styles.css */
+:root {
+    --nav-color         : #4c1e4fff;
+    --content-color     : #F2F4F6ff;
+    --text-color        : white;
+    --border-radius     : 5px;
+    --font-size-header  : 1.2em;
+    --font-size-item    : 1em;
+    --primary-color     : #096BAFff;  /*  #6C79BD; */
+    --secondary-color   : #0374C2ff;  /* #E5E9FE; */
+    --hover-color       : #1B6598ff;  /* #6A65C5; */
+    
+    --padding           : 10px;
+}
+
+--palatinate:
+--khaki: #b5a886ff;
+--light-orange: #fee1c7ff;
+--bittersweet: #fa7e61ff;
+--french-rose: #f44174ff;
