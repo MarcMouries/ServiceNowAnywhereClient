@@ -1,103 +1,130 @@
+// src/components/app-nav.js
+
 import { LOG_STYLE } from "../LogStyles";
 import { EVENT_SYS_FETCHED_USER_APPS, EVENT_USER_CLICKED_ON_APP } from '../EventTypes.ts';
 import { EventEmitter } from '../EventEmitter.ts';
 
-// src/components/app-nav.js
-class AppNav extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
+const template = document.createElement('template');
+template.innerHTML = `
+<link rel="stylesheet" href="/styles/global-styles.css"> <!-- This line ensures the stylesheet is imported -->
 
-    EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (itemList) => {
-      console.log('%c⑨ Updating app-nav with items', LOG_STYLE);
-      this.setItemList(itemList);
-    });
-
-    const nav = document.createElement('nav');
-
-    const header = document.createElement('h1');
-    header.textContent = 'Items';
-    nav.appendChild(header);
-
-    const ul = document.createElement('ul');
-    nav.appendChild(ul);
-    this.shadowRoot.appendChild(nav);
-
-    const style = document.createElement('style');
-    style.textContent = `
+<nav>
+    <h1>Items</h1>
+    <ul></ul>
+</nav>
+<style>
     @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
+
     * {
-      box-sizing: border-box;
+        box-sizing: border-box;
     }
     :host {
-      display: flex;
-      height: 100vh;
-      width: 100%;
-      background-color:#6C79BD;
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        background-color: var(--nav-color);
     }
 
     nav {
-      _margin: 1rem;
-      padding: 10px;
-      height: 100vh;
-      width: 100%;
+        padding: var(--padding);
+        height: 100vh;
+        width: 100%;
     }
     h1 {
-      font-size: 1.2em;
-      margin: 0 0 20px;
-      text-align: center;
+        font-size: var(--font-size-header);
+        margin: 0 0 20px;
+        text-align: center;
     }
-      ul {
+    ul {
         list-style-type: none;
         padding: 0;
         margin: 0;
         width: 100%;
-      }
-      li {
-        border-radius: 5px;
-        color: white;
+    }
+    li {
+        border-radius: var(--border-radius);
+        color: var(--text-color);
         cursor: pointer;
         padding: 6px 8px;
         text-align: left;
         transition: background 0.3s ease;
-      }
-      li:hover, li.active {
-        background: #6A65C5;
-      }
-      li i {
+    }
+    li:hover, li.active {
+        background: var(--hover-color);
+        font-weight: 600;
+    }
+    li i {
         margin-right: 10px;
-      }
-    `;
-    this.shadowRoot.appendChild(style);
-  }
+    }
+</style>
+`;
 
-  setItemList(items) {
-    const ul = this.shadowRoot.querySelector('ul');
-    ul.innerHTML = ''; // Clear existing content
+class AppNav extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    items.forEach(item => {
-      const li = document.createElement('li');
-      const icon = document.createElement('i');
-      icon.setAttribute('class', 'fas fa-table');
-      li.appendChild(icon);
-      li.appendChild(document.createTextNode(item));
-      li.addEventListener('click', () => this.handleItemClick(li, item));
-      ul.appendChild(li);
-    });
-  }
+        // Set the default home location
+        this.homeLocation = this.getAttribute('home-location') || '/';
 
+        // Add home item by default
+        this.addListItem('Home', 'fas fa-home', (li) => this.handleHomeClick(li));
 
-  handleItemClick(li, item) {
-    // Remove 'active' class from all items
-    const ul = this.shadowRoot.querySelector('ul');
-    ul.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+        EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (itemList) => {
+            console.log('%c⑨ Updating app-nav with items', LOG_STYLE);
+            this.setItemList(itemList);
+        });
+    }
 
-    // Add 'active' class to the clicked item
-    li.classList.add('active');
+    static get observedAttributes() {
+        return ['home-location'];
+    }
 
-    console.log(`%cHandling item click: ${item}`, 'color: white; background: darkblue;');
-    EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, item);
-  }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'home-location' && oldValue !== newValue) {
+            this.homeLocation = newValue;
+        }
+    }
+
+    addListItem(text, iconClass, clickHandler) {
+        const ul = this.shadowRoot.querySelector('ul');
+        const li = document.createElement('li');
+        const icon = document.createElement('i');
+        icon.setAttribute('class', iconClass);
+        li.appendChild(icon);
+        li.appendChild(document.createTextNode(text));
+        li.addEventListener('click', () => clickHandler(li));
+        ul.appendChild(li);
+    }
+
+    setItemList(items) {
+        const ul = this.shadowRoot.querySelector('ul');
+        // Clear existing content except for the home item
+        ul.querySelectorAll('li:not(:first-child)').forEach(li => li.remove());
+
+        items.forEach(item => {
+            this.addListItem(item, 'fas fa-list', (li) => this.handleItemClick(li, item));
+        });
+    }
+
+    handleHomeClick(li) {
+        this.updateActiveClass(li);
+        console.log(`%cHandling home click, redirect to ${this.homeLocation}`, 'color: white; background: darkblue;');
+        window.location.href = this.homeLocation; // This redirects to the main page or specified location
+    }
+
+    handleItemClick(li, item) {
+        this.updateActiveClass(li);
+        console.log(`%cHandling item click: ${item}`, 'color: white; background: darkblue;');
+        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, item);
+    }
+
+    updateActiveClass(activeLi) {
+        const ul = this.shadowRoot.querySelector('ul');
+        ul.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+        activeLi.classList.add('active');
+    }
 }
 
 customElements.define('app-nav', AppNav);
