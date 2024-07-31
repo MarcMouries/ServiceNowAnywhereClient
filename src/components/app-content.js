@@ -55,6 +55,10 @@ class AppContent extends HTMLElement {
         border: 1px solid #ddd;
         text-align: left;
       }
+      tr:hover {
+        background-color:  #f4f4f4;
+        cursor: pointer;
+      }
       th {
         background-color: #f4f4f4;
         color: #4A47A3;
