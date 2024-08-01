@@ -15,8 +15,6 @@ template.innerHTML = `
 }
   app-nav {
     width: 20%;
-    border-right: 1px solid #ddd;
-
   }
   app-content {
     width: 80%;
