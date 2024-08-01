@@ -5,18 +5,17 @@ import { EventEmitter } from '../EventEmitter.ts';
 
 const template = document.createElement('template');
 template.innerHTML = `
-    <div class="content"></div>
+    <div class="container"></div>
     <style>
         :host {
             font-family: "Poppins", sans-serif !important;
-            font-size: 1rem;
             background-color: var(--content-color);
         }
-        .content {
-            padding: 20px;
-            font-size: 16px;
+        .container {
+            padding: 15px;
+            padding-bottom: 20px;
             line-height: 1.5;
-            background-color: white;
+            background-color: var(--container-color);
             border-radius: var(--border-radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -28,28 +27,39 @@ template.innerHTML = `
         }
         .header-row h2 {
             margin: 0;
-            font-size: 1.5em;
-            color: var(--primary-color);
+            color: var(--table-th-color);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        tr:hover {
-            background-color: var(--hover-color);
-            cursor: pointer;
+            font-size: 0.9rem;
         }
         th {
-            background-color: var(--hover-color);
-            color: var(--text-color);
+            background-color: var(--table-th-background);
+            border: 1px solid var(--table-border);
+            color: var(--table-th-color);
+            font-size: 0.8rem;
+            padding: 10px;
+            text-align: left;
+            text-transform: uppercase;
+          }
+        td {
+          padding: 10px;
+          border: 1px solid var(--table-border);
+          text-align: left;
         }
-        .content button {
+        tr {
+          color: var(--table-tr-color);
+        }
+        tr:hover td {
+            border-inline: 1px solid var(--accent-bright);
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+          background-color: var(--table-tr-even);
+        }
+        .container button {
             background-color: var(--primary-color);
             border: none;
             border-radius: var(--border-radius);
@@ -75,7 +85,7 @@ class AppContent extends HTMLElement {
     }
 
     setContent(appName, data) {
-        const contentDiv = this.shadowRoot.querySelector(".content");
+        const contentDiv = this.shadowRoot.querySelector(".container");
         let tableHeaders = data.fields.map((field) => `<th>${field}</th>`).join("");
         let tableRows = data.records.map((record, index) => `
             <tr data-index="${index}">

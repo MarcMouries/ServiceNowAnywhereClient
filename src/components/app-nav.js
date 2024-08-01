@@ -6,7 +6,7 @@ import { EventEmitter } from '../EventEmitter.ts';
 
 const template = document.createElement('template');
 template.innerHTML = `
-<link rel="stylesheet" href="/styles/global-styles.css"> <!-- This line ensures the stylesheet is imported -->
+
 
 <nav>
     <h1>Items</h1>
@@ -22,7 +22,8 @@ template.innerHTML = `
         display: flex;
         height: 100vh;
         width: 100%;
-        background-color: var(--nav-color);
+        background : var(--nav-background);
+        border-right: 1px solid var(--nav-border-right);
     }
 
     nav {
@@ -42,8 +43,9 @@ template.innerHTML = `
         width: 100%;
     }
     li {
+        margin-bottom: 10px;
         border-radius: var(--border-radius);
-        color: var(--text-color);
+        color: var(--nav-text-color);
         cursor: pointer;
         padding: 6px 8px;
         text-align: left;
@@ -51,7 +53,7 @@ template.innerHTML = `
     }
     li:hover, li.active {
         background: var(--hover-color);
-        font-weight: 600;
+        font-weight: 400;
     }
     li i {
         margin-right: 10px;
@@ -111,8 +113,10 @@ class AppNav extends HTMLElement {
     handleHomeClick(li) {
         this.updateActiveClass(li);
         console.log(`%cHandling home click, redirect to ${this.homeLocation}`, 'color: white; background: darkblue;');
-        window.location.href = this.homeLocation; // This redirects to the main page or specified location
+        history.pushState(null, '', this.homeLocation); // Update the URL without reloading the page
+        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, 'home'); 
     }
+
 
     handleItemClick(li, item) {
         this.updateActiveClass(li);

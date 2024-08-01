@@ -1,20 +1,40 @@
 /* global-styles.css */
 :root {
-    --nav-color         : #4c1e4fff;
-    --content-color     : #F2F4F6ff;
-    --text-color        : white;
-    --border-radius     : 5px;
+    --primary           : #011625; /* Used for primary interface elements like headers and footers; a strong, dark base. */
+    --secondary         : #062639; /* Suitable for secondary elements, provides a subtle contrast for hover states and secondary buttons. */
+    --accent            : #1D3A4B; /* Utilized for accenting features to draw attention, not as prominent as primary actions. */
+    --brand             : #4F87A5; /* Represents the brand color, used in strategic places to enhance brand recognition. */
+
+    --tamed-light       : #B3C1CA;
+    --dimmed-light      : #B5C1CB; /* A dimmed light shade for subdued background areas, ideal for secondary content zones. */
+
+    --bright-light      : #E4EFF4; /* The lightest color, excellent for main backgrounds to maximize readability. */
+    --accent-bright     : #468050;
+
+    --nav-background    : var(--primary);       /* As navigation typically aligns with primary interface elements. */
+    --nav-text-color    : var(--bright-light);
+    --nav-border-right  : var(--accent);
+    --container-color   : var(--secondary);
+    --content-color     : var(--primary);       /* Optimal for readability in main content areas. */
+    --text-color        : var(--bright-light);  /* Ensuring maximum contrast and readability. */
+    --primary-color     : var(--brand);         /* Directly represents the brand within the application. */
+    --secondary-color   : var(--secondary);     /* For elements that are not primary but still need differentiation. */
+    --hover-color       : var(--accent);        /* Good for hover effects to draw attention to interactive elements. */
+    --table-th-color        : var(--dimmed-light);
+    --table-th-background   : var(--container-color);
+    --table-border          : var(--secondary);
+    --table-tr-color        : var(--dimmed-light);
+    --table-tr-even         : var(--accent);
+
+
+    --padding           : 10px;
+    --border-radius     : 10px;
     --font-size-header  : 1.2em;
     --font-size-item    : 1em;
-    --primary-color     : #096BAFff;  /*  #6C79BD; */
-    --secondary-color   : #0374C2ff;  /* #E5E9FE; */
-    --hover-color       : #1B6598ff;  /* #6A65C5; */
-    
-    --padding           : 10px;
 }
 
---palatinate:
---khaki: #b5a886ff;
---light-orange: #fee1c7ff;
---bittersweet: #fa7e61ff;
---french-rose: #f44174ff;
+
+/*  #4c1e4fff; #6C79BD;  #6A65C5;  #E5E9FE;         */
+/*   #096BAFff; #0374C2ff; #1B6598ff;  #F2F4F6ff;   */
+
+
