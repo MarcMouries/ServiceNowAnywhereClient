@@ -1,12 +1,20 @@
 // src/main.js
 import { LOG_STYLE } from './LogStyles';
 
+
 const { invoke } = window.__TAURI__.core;
 
 window.NOW_ANYWHERE = {};
 
+
+
+
 async function initializeApp() {
   console.log('%c⑭ Initializing App', LOG_STYLE);
+
+  const { innerWidth: w, innerHeight: h } = window;
+  console.log(`Current window size = ${w} x ${h}`);
+
   const [clientId, clientSecret, redirectUri, servicenowUrl, username, password]
     = await invoke('initialize_app');
 
