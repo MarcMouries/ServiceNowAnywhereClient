@@ -1,4 +1,4 @@
-// src/components/app-nav.js
+// src/components/sideBar.js
 
 import { LOG_STYLE } from "../LogStyles";
 import { EVENT_SYS_FETCHED_USER_APPS, EVENT_USER_CLICKED_ON_APP } from '../EventTypes.ts';
@@ -8,10 +8,10 @@ const template = document.createElement('template');
 template.innerHTML = `
 
 
-<nav>
+<sideBar>
     <h1>Items</h1>
     <ul></ul>
-</nav>
+</sideBar>
 <style>
     @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
 
@@ -22,11 +22,11 @@ template.innerHTML = `
         display: flex;
         height: 100vh;
         width: 100%;
-        background : var(--nav-background);
-        border-right: 1px solid var(--nav-border-right);
+        background : var(--sideBar-background);
+        border-right: 1px solid var(--sideBar-border-right);
     }
 
-    nav {
+    sideBar {
         padding: var(--padding);
         height: 100vh;
         width: 100%;
@@ -45,7 +45,7 @@ template.innerHTML = `
     li {
         margin-bottom: 10px;
         border-radius: var(--border-radius);
-        color: var(--nav-text-color);
+        color: var(--sideBar-text-color);
         cursor: pointer;
         padding: 6px 8px;
         text-align: left;
@@ -61,7 +61,7 @@ template.innerHTML = `
 </style>
 `;
 
-class AppNav extends HTMLElement {
+class SideBar extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
@@ -74,7 +74,7 @@ class AppNav extends HTMLElement {
         this.addListItem('Home', 'fas fa-home', (li) => this.handleHomeClick(li));
 
         EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (itemList) => {
-            console.log('%c⑨ Updating app-nav with items', LOG_STYLE);
+            console.log('%c⑨ Updating app-sideBar with items', LOG_STYLE);
             this.setItemList(itemList);
         });
     }
@@ -131,4 +131,4 @@ class AppNav extends HTMLElement {
     }
 }
 
-customElements.define('app-nav', AppNav);
+customElements.define('side-bar', SideBar);

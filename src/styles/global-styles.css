@@ -4,6 +4,7 @@
     --secondary         : #062639; /* Suitable for secondary elements, provides a subtle contrast for hover states and secondary buttons. */
     --accent            : #1D3A4B; /* Utilized for accenting features to draw attention, not as prominent as primary actions. */
     --brand             : #4F87A5; /* Represents the brand color, used in strategic places to enhance brand recognition. */
+    --tertiary          : #0A3A52;
 
     --tamed-light       : #B3C1CA;
     --dimmed-light      : #B5C1CB; /* A dimmed light shade for subdued background areas, ideal for secondary content zones. */
@@ -11,17 +12,17 @@
     --bright-light      : #E4EFF4; /* The lightest color, excellent for main backgrounds to maximize readability. */
     --accent-bright     : #468050;
 
-    --nav-background    : var(--primary);       /* As navigation typically aligns with primary interface elements. */
-    --nav-text-color    : var(--bright-light);
-    --nav-border-right  : var(--accent);
+    --sideBar-background    : var(--primary);       /* As sideBarigation typically aligns with primary interface elements. */
+    --sideBar-text-color    : var(--bright-light);
+    --sideBar-border-right  : var(--accent);
     --container-color   : var(--secondary);
     --content-color     : var(--primary);       /* Optimal for readability in main content areas. */
     --text-color        : var(--bright-light);  /* Ensuring maximum contrast and readability. */
     --primary-color     : var(--brand);         /* Directly represents the brand within the application. */
     --secondary-color   : var(--secondary);     /* For elements that are not primary but still need differentiation. */
     --hover-color       : var(--accent);        /* Good for hover effects to draw attention to interactive elements. */
+    --table-th-background   : var(--tertiary);
     --table-th-color        : var(--dimmed-light);
-    --table-th-background   : var(--container-color);
     --table-border          : var(--secondary);
     --table-tr-color        : var(--dimmed-light);
     --table-tr-even         : var(--accent);
@@ -33,8 +34,8 @@
     --font-size-item    : 1em;
 }
 
-
+/*  #020406 #1D2224  */
 /*  #4c1e4fff; #6C79BD;  #6A65C5;  #E5E9FE;         */
-/*   #096BAFff; #0374C2ff; #1B6598ff;  #F2F4F6ff;   */
+/*  #096BAFff; #0374C2ff; #1B6598ff;  #F2F4F6ff;   */
 
 
