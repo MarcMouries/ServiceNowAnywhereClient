@@ -5,7 +5,7 @@ import { EventEmitter } from "./EventEmitter.ts";
 
 const template = document.createElement("template");
 template.innerHTML = `
-<app-nav home-location="./workspace.html"></app-nav>
+<side-bar home-location="./workspace.html"></side-bar>
 <app-content></app-content>
     <style>
         :host {
@@ -13,7 +13,7 @@ template.innerHTML = `
   height: 100vh;
   width: 100%;
 }
-  app-nav {
+  side-bar {
     width: 20%;
   }
   app-content {
