@@ -38,6 +38,7 @@ template.innerHTML = `
         th {
             background-color: var(--table-th-background);
             border: 1px solid var(--table-border);
+            border-radius: 5px;
             color: var(--table-th-color);
             font-size: 0.8rem;
             padding: 10px;
@@ -59,6 +60,18 @@ template.innerHTML = `
         tr:nth-child(even) {
           background-color: var(--table-tr-even);
         }
+        /* Apply border-radius to the first column's left border */
+        table tr td:first-child {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        /* Apply border-radius to the last column's right border */
+        table tr td:last-child {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
         .container button {
             background-color: var(--primary-color);
             border: none;
