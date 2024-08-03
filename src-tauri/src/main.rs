@@ -4,10 +4,7 @@
 use dotenv::dotenv;
 use std::env;
 use std::path::Path;
-use tauri::{
-  menu::{MenuBuilder, MenuItemBuilder},
-  tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-};
+//use tauri::{TitleBarStyle, WebviewUrl, WebviewWindowBuilder};
 
 mod date_util;
 
@@ -81,8 +78,19 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! We'll try to log you in next time!", name)
 }
 
+/*
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .invoke_handler(tauri::generate_handler![greet, initialize_app])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+*/
+
+fn main() {
+    tauri::Builder::default()
+        .setup(|app| Ok(()))
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![greet, initialize_app])
         .run(tauri::generate_context!())
