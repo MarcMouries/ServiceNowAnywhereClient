@@ -1,5 +1,5 @@
 // src/login.js
-import { authenticateUser } from './dataService';
+import { dataService } from "./DataService2";
 import { LOG_STYLE } from './LogStyles';
 import { EVENT_AUTH_FAILED } from './EventTypes';
 import { EventEmitter } from './EventEmitter';
@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('%c⑫ User clicked on log in', LOG_STYLE);
       const username = document.getElementById('user_name').value;
       const password = document.getElementById('user_password').value;
-      await authenticateUser(username, password);
+      //await authenticateUser(username, password);
+      await dataService.authenticateUser(username, password);
     });
 
     document.getElementById("mask_icon").addEventListener("click", function (e) {
