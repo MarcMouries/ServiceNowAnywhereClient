@@ -8,9 +8,9 @@
     "build": "bun build ./src/index.js --outfile=./dist/bundle.js.js && bun run copy-assets.js"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0-beta.23"
+    "@tauri-apps/cli": "^2.0.0-rc.1"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.6.0"
+    "@tauri-apps/api": "^2.0.0-rc.0"
   }
 }

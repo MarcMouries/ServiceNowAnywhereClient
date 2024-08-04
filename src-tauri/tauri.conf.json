@@ -4,7 +4,6 @@
   "identifier": "net.mouries.dev",
   "build": {
     "frontendDist": "../dist/"
-
   },
   "app": {
     "withGlobalTauri": true,
@@ -33,5 +32,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
-  }
+  },
+  "plugins": {}
 }
