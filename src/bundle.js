@@ -5,12 +5,13 @@ import './app-model.js';
 import './app-view.js';
 import './main.js';
 import './app-controller.js';
-import './DataService2';
+import './DataService';
 import './DataSource';
 import './login.js';
 import './EventEmitter';
 import './EventTypes';
 import './datasource/mockDataSource.js';
+import './datasource/NowDataSource.js';
 
 import { LOG_STYLE } from './LogStyles';
 
