@@ -1,5 +1,5 @@
 // src/login.js
-import { dataService } from "./DataService2";
+import { dataService } from "./DataService";
 import { LOG_STYLE } from './LogStyles';
 import { EVENT_AUTH_FAILED } from './EventTypes';
 import { EventEmitter } from './EventEmitter';

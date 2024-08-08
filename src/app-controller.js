@@ -1,8 +1,8 @@
 // src/app-controller.js
 import { Model } from "./app-model";
-//import { authenticateUser, fetchUserApps, fetchData } from "./DataSource";
-import { dataService } from "./DataService2";
+import { dataService } from "./DataService";
 import { MockDataSource } from "./datasource/mockDataSource";
+import { NowDataSource } from "./datasource/NowDataSource";
 
 import { LOG_STYLE } from "./LogStyles";
 import {
@@ -17,12 +17,16 @@ import { EventEmitter } from "./EventEmitter";
 
 const model = new Model();
 
-const isMock = true;
+const isMock = false;
 
 if (isMock) {
   dataService.setDataSource(new MockDataSource());
-  console.log("dataService......:", dataService);
+} else {
+  dataService.setDataSource(new NowDataSource());
 }
+
+console.log("Data source = ", dataService.dataSource.class);
+
 
 export async function initializeApp() {
   console.log("%c① ① Initializing App", LOG_STYLE);
