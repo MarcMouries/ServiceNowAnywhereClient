@@ -17,6 +17,10 @@ class DataService {
     return this.dataSource.fetchUserApps(userSysId);
   }
 
+  async fetchTablesForApp(appName) {
+    return this.dataSource.fetchTablesForApp(appName);
+  }
+
   async fetchData(appName) {
     return this.dataSource.fetchData(appName);
   }

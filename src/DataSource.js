@@ -8,6 +8,10 @@ export class DataSource {
       throw new Error('fetchUserApps method not implemented');
     }
 
+    async fetchTablesForApp(appName) {
+      throw new Error('fetchTablesForApp method not implemented');
+    }
+
     async fetchData(appName) {
       throw new Error('fetchData method not implemented');
     }
