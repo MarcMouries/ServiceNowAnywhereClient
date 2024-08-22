@@ -33,7 +33,7 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
     let client_id = env::var("CLIENT_ID").map_err(|e| e.to_string())?;
     let client_secret = env::var("CLIENT_SECRET").map_err(|e| e.to_string())?;
     let redirect_uri = env::var("REDIRECT_URI").map_err(|e| e.to_string())?;
-    let servicenow_url = env::var("SERVICENOW_URL").map_err(|e| e.to_string())?;
+    let service_now_url = env::var("SERVICENOW_URL").map_err(|e| e.to_string())?;
     let username = env::var("USERNAME").unwrap_or_default();
     let password = env::var("PASSWORD").unwrap_or_default();
 
@@ -51,7 +51,7 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
     println!("{:<LABEL_WIDTH$}{}", "CLIENT_ID:", client_id);
     println!("{:<LABEL_WIDTH$}{}", "CLIENT_SECRET:", client_secret);
     println!("{:<LABEL_WIDTH$}{}", "REDIRECT_URI:", redirect_uri);
-    println!("{:<LABEL_WIDTH$}{}", "SERVICENOW_URL:", servicenow_url);
+    println!("{:<LABEL_WIDTH$}{}", "SERVICENOW_URL:", service_now_url);
     println!("{:<LABEL_WIDTH$}{}", "USERNAME:", username);
     println!("{:<LABEL_WIDTH$}{}", "PASSWORD:", password);
     // Print the current working directory for debugging purposes
@@ -66,7 +66,7 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
         client_id,
         client_secret,
         redirect_uri,
-        servicenow_url,
+        service_now_url,
         username,
         password,
     ))
