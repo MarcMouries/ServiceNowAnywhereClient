@@ -3,11 +3,10 @@ import { Model } from "./app-model";
 import { dataService } from "./DataService";
 import { MockDataSource } from "./datasource/mockDataSource";
 import { NowDataSource } from "./datasource/NowDataSource";
-
 import { LOG_STYLE } from "./LogStyles";
 import {
-  EVENT_SYS_AUTHENTICATED_USER,
   EVENT_AUTH_FAILED,
+  EVENT_SYS_AUTHENTICATED_USER,
   EVENT_SYS_FETCHED_USER_APPS,
   EVENT_USER_CLICKED_ON_APP,
   EVENT_USER_CLICKED_RECORD_ROW,
@@ -27,7 +26,6 @@ if (isMock) {
 
 console.log("Data source = ", dataService.dataSource.class);
 
-
 export async function initializeApp() {
   console.log("%c① ① Initializing App", LOG_STYLE);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -40,9 +38,9 @@ export async function initializeApp() {
 
 EventEmitter.on(EVENT_SYS_AUTHENTICATED_USER, async (user) => {
   console.log(`%c③ User successfully authenticated: ${JSON.stringify(user)}`, LOG_STYLE);
-  const itemList = await dataService.fetchUserApps(user.sys_id);
-  console.log(`%c⑥ Apps fetched for user: ${user.name} = ${itemList.join(", ")}`, LOG_STYLE);
-  model.setItemList(itemList);
+  const appList = await dataService.fetchUserApps(user.sys_id);
+  console.log(`%c⑥ Apps fetched for user: ${user.name} = ${appList.join(", ")}`, LOG_STYLE);
+  model.setUserAppsList(appList);
 
   // Redirect to workspace.html
   console.log(`%c⑦ Current location ${window.location.href}`, LOG_STYLE);
@@ -57,10 +55,10 @@ EventEmitter.on(EVENT_AUTH_FAILED, (message) => {
   document.getElementById("error-msg").textContent = message;
 });
 
-EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (dataName) => {
-  console.log(`%c⑧ Handling data selection: ${dataName}`, LOG_STYLE);
-  const selectedData = await dataService.fetchData(dataName);
-  model.setItemRecordList(dataName, selectedData);
+EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (app) => {
+  console.log(`%c⑧ Handling app selection: ${app.appName}`, LOG_STYLE);
+  const tableList = await dataService.fetchTablesForApp(app.appScope);
+  model.setUserTablesList(app.appScope, tableList);
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
