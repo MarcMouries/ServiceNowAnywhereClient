@@ -6,8 +6,6 @@ import { EventEmitter } from '../EventEmitter.ts';
 
 const template = document.createElement('template');
 template.innerHTML = `
-
-
 <sideBar>
     <h1>Items</h1>
     <ul></ul>
@@ -73,9 +71,9 @@ class SideBar extends HTMLElement {
         // Add home item by default
         this.addListItem('Home', 'fas fa-home', (li) => this.handleHomeClick(li));
 
-        EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (itemList) => {
+        EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (appList) => {
             console.log('%c⑨ Updating app-sideBar with items', LOG_STYLE);
-            this.setItemList(itemList);
+            this.setAppsList(appList);
         });
     }
 
@@ -100,13 +98,13 @@ class SideBar extends HTMLElement {
         ul.appendChild(li);
     }
 
-    setItemList(items) {
+    setAppsList(apps) {
         const ul = this.shadowRoot.querySelector('ul');
         // Clear existing content except for the home item
         ul.querySelectorAll('li:not(:first-child)').forEach(li => li.remove());
 
-        items.forEach(item => {
-            this.addListItem(item, 'fas fa-list', (li) => this.handleItemClick(li, item));
+        apps.forEach(app => {
+            this.addListItem(app.appName, 'fas fa-list', (li) => this.handleAppClick(li, app));
         });
     }
 
@@ -117,11 +115,10 @@ class SideBar extends HTMLElement {
         EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, 'home'); 
     }
 
-
-    handleItemClick(li, item) {
+    handleAppClick(li, app) {
         this.updateActiveClass(li);
-        console.log(`%cHandling item click: ${item}`, 'color: white; background: darkblue;');
-        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, item);
+        console.log(`%cHandling app click: ${app.appName} with scope: ${app.appScope}`, 'color: white; background: darkblue;');
+        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, app);
     }
 
     updateActiveClass(activeLi) {
