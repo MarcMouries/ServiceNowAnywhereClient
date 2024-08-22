@@ -2,10 +2,8 @@
   "productName": "ServiceNowAnywhere",
   "version": "0.0.0",
   "identifier": "net.mouries.dev",
-  "build": {
-    "frontendDist": "../dist/"
-  },
   "app": {
+    "macOSPrivateApi": true,
     "withGlobalTauri": true,
     "windows": [
       {
@@ -21,6 +19,9 @@
     "security": {
       "csp": null
     }
+  },
+  "build": {
+    "frontendDist": "../dist/"
   },
   "bundle": {
     "active": true,
