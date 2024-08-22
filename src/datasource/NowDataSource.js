@@ -92,8 +92,11 @@ export class NowDataSource extends DataSource {
 
             // Check if the data contains the expected result array
             if (data && data.result && Array.isArray(data.result)) {
-                const applicationList = data.result.map(app => app.appName);
-                console.log("Fetched applications:", applicationList);
+              const applicationList = data.result.map(app => ({
+                appName: app.appName,
+                appScope: app.appScope
+            }));
+            console.log("Fetched applications:", applicationList);
 
                 // Emit the fetched user apps event
                 EventEmitter.emit(EVENT_SYS_FETCHED_USER_APPS, applicationList);
@@ -121,22 +124,24 @@ export class NowDataSource extends DataSource {
     }
 }
 
-
-  async fetchUserTables(appScope) {
+  async fetchTablesForApp(appScope) {
     console.log(`Fetching tables for app scope ${appScope}`);
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("user:", user);
+    const { username, authToken } = user;
+
 
     try {
-      const { servicenowUrl, user: storedUser } = window.NOW_ANYWHERE;
-      const credentials = storedUser.authToken;
+      const serviceNowUrl = localStorage.getItem("serviceNowUrl");
 
       // Construct the URL for the GetUserTablesAccess API
-      const url = `${servicenowUrl}/api/x_omni_server/useraccessservice/user-tables-access?username=${storedUser.name}&app_scope=${appScope}`;
+      const url = `${serviceNowUrl}/api/x_omni_server/useraccessservice/user-app-tables-access?username=${username}&app_scope=${appScope}`;
       console.log("Fetching user tables with URL:", url);
 
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: `Basic ${credentials}`,
+          Authorization: `Basic ${authToken}`,
           Accept: "application/json",
           "Content-Type": "application/json",
         },
