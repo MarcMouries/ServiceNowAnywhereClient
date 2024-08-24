@@ -35,11 +35,11 @@ export class NowDataSource extends DataSource {
 
     const { serviceNowUrl } = window.NOW_ANYWHERE;
     const credentials = btoa(`${username}:${password}`);
-    const table = "sys_user";
+    const tableName = "sys_user";
     const sysparm_fields = "name,email,sys_id";
     const sysparm_limit = 1;
 
-    const url = `${serviceNowUrl}/api/now/table/${table}?sysparm_query=user_name=${username}&sysparm_fields=${encodeURIComponent(sysparm_fields)}&sysparm_limit=${sysparm_limit}`;
+    const url = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_query=user_name=${username}&sysparm_fields=${encodeURIComponent(sysparm_fields)}&sysparm_limit=${sysparm_limit}`;
     console.log("url", url);
 
     const data = await this.fetchData(url, credentials);
@@ -67,7 +67,6 @@ export class NowDataSource extends DataSource {
     console.log("Fetching apps the user has access to");
     const user = JSON.parse(localStorage.getItem("user"));
     const { username, authToken } = user;
-
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
     const url = `${serviceNowUrl}/api/x_omni_server/useraccessservice/user-apps-access?username=${username}`;
     console.log("Fetching user apps with URL:", url);
@@ -86,7 +85,6 @@ export class NowDataSource extends DataSource {
     console.log(`Fetching tables for app scope ${appScope}`);
     const user = JSON.parse(localStorage.getItem("user"));
     const { username, authToken } = user;
-
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
     const url = `${serviceNowUrl}/api/x_omni_server/useraccessservice/user-app-tables-access?username=${username}&app_scope=${appScope}`;
     console.log("Fetching user tables with URL:", url);
@@ -97,6 +95,25 @@ export class NowDataSource extends DataSource {
       return data.result;
     } else {
       console.error("Unexpected data format or no tables found");
+      return [];
+    }
+  }
+
+  async fetchRecordsForTable(tableName) {
+    console.log(`Fetching records for table ${tableName}`);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const { username, authToken } = user;
+    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
+    const url = `${serviceNowUrl}/api/now/table/${tableName}`;
+    console.log(`url = ${url}`);
+
+    const data = await this.fetchData(url, authToken);
+    if (data && data.result && Array.isArray(data.result)) {
+      console.log("Fetched records:", data.result);
+      return data.result;
+    } else {
+      console.error("Unexpected data format or no records found");
       return [];
     }
   }
