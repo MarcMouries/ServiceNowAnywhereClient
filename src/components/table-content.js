@@ -1,17 +1,16 @@
-// src/components/app-content.js
+// src/components/table-content.js
 import { EVENT_RECORD_LIST_UPDATED } from "../EventTypes.ts";
 import { EVENT_USER_CLICKED_RECORD_ROW, EVENT_USER_CLICKED_NEW_RECORD_BUTTON } from '../EventTypes';
 import { EventEmitter } from '../EventEmitter.ts';
 
 const template = document.createElement('template');
 template.innerHTML = `
-    <div class="container"></div>
     <style>
         :host {
             font-family: "Poppins", sans-serif !important;
             background-color: var(--content-color);
         }
-        .container {
+        .table-container {
             padding: 15px;
             padding-bottom: 20px;
             line-height: 1.5;
@@ -83,6 +82,8 @@ template.innerHTML = `
             padding: 6px 8px;
         }
     </style>
+
+    <div class="table-container"></div>
 `;
 
 class AppContent extends HTMLElement {
@@ -98,7 +99,7 @@ class AppContent extends HTMLElement {
     }
 
     setContent(appName, data) {
-        const contentDiv = this.shadowRoot.querySelector(".container");
+        const contentDiv = this.shadowRoot.querySelector(".table-container");
         let tableHeaders = data.fields.map((field) => `<th>${field}</th>`).join("");
         let tableRows = data.records.map((record, index) => `
             <tr data-index="${index}">
@@ -121,12 +122,12 @@ class AppContent extends HTMLElement {
              </tbody>
            </table>
          `;
- 
+
          // Add event listeners for the button and table rows
          this.shadowRoot.querySelector('#add_new_record').addEventListener('click', () => {
            EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, appName);
          });
- 
+
          this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
            row.addEventListener('click', () => {
              const rowIndex = row.getAttribute('data-index');
@@ -135,5 +136,5 @@ class AppContent extends HTMLElement {
          });
        }
      }
-     
- customElements.define("app-content", AppContent);
+
+customElements.define("table-content", AppContent);
