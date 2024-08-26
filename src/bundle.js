@@ -1,5 +1,5 @@
 import './components/sideBar.js';
-import './components/app-content.js';
+import './components/table-content.js';
 import './components/online-status.js';
 import './app-model.js';
 import './app-view.js';
