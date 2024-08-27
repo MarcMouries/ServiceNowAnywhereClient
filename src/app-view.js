@@ -5,21 +5,23 @@ import { EventEmitter } from "./EventEmitter.ts";
 
 const template = document.createElement("template");
 template.innerHTML = `
-<side-bar home-location="./workspace.html"></side-bar>
-<app-content></app-content>
-    <style>
-        :host {
-  display: flex;
-  height: 100vh;
-  width: 100%;
-}
+<style>
+  :host {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+  }
   side-bar {
-    width: 20%;
+      width: 20%;
   }
-  app-content {
-    width: 80%;
-    padding: 20px;
+  table-content {
+      width: 80%;
+      padding: 20px;
   }
+</style>
+
+<side-bar home-location="./workspace.html"></side-bar>
+<table-content></table-content>
 `;
 
 class AppView extends HTMLElement {
