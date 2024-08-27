@@ -6,32 +6,30 @@ const { invoke } = window.__TAURI__.core;
 
 window.NOW_ANYWHERE = {};
 
-
-
-
 async function initializeApp() {
   console.log('%c⑭ Initializing App', LOG_STYLE);
 
   const { innerWidth: w, innerHeight: h } = window;
   console.log(`Current window size = ${w} x ${h}`);
 
-  const [clientId, clientSecret, redirectUri, servicenowUrl, username, password]
-    = await invoke('initialize_app');
+  const [clientId, clientSecret, redirectUri, serviceNowUrl, username, password]= await invoke('initialize_app');
 
   console.log('CLIENT_ID......:', clientId);
   console.log('CLIENT_SECRET..:', clientSecret);
   console.log('REDIRECT_URI...:', redirectUri);
-  console.log('SERVICENOW_URL.:', servicenowUrl);
+  console.log('SERVICENOW_URL.:', serviceNowUrl);
   console.log('USERNAME..:', username);
   console.log('PASSWORD..:', password);
 
-  window.NOW_ANYWHERE = { clientId, clientSecret, redirectUri, servicenowUrl, username, password };
+  window.NOW_ANYWHERE = { clientId, clientSecret, redirectUri, serviceNowUrl, username, password };
+  console.log('AFTER SEETING window.NOW_ANYWHERE');
+  console.log("initializeApp ", window.NOW_ANYWHERE);
 }
 
 async function fetchToken(code) {
   try {
     const { clientId, clientSecret, redirectUri } = await getEnvVars();
-    
+
     const response = await fetch('https://your-instance.service-now.com/oauth_token.do', {
       method: 'POST',
       headers: {
