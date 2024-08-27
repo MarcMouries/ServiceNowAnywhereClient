@@ -22,7 +22,6 @@ export class MockDataSource extends DataSource {
   async fetchUserApps(userSysId) {
     console.log(`Fetching mock apps for user ${userSysId}`);
     const applicationList = ["Inspections", "Expenses"];
-    EventEmitter.emit(EVENT_SYS_FETCHED_USER_APPS, applicationList);
     return applicationList;
   }
 
