@@ -28,7 +28,7 @@ export class Model {
   // Set and get the list of apps the user has access to
   setUserAppsList(userAppsList) {
     this.userAppsList = userAppsList;
-    EventEmitter.emit(EVENT_SYS_FETCHED_USER_APPS, userAppsList);
+
   }
 
   getUserAppsList() {
@@ -38,7 +38,6 @@ export class Model {
   // Set and get the list of tables from a specific app the user has access to
   setUserTablesList(appName, tableList) {
     this.userTablesList = { appName, tables: tableList };
-    EventEmitter.emit(EVENT_SYS_FETCHED_USER_TABLES, { appName, tableList });
   }
 
   getUserTablesList() {
