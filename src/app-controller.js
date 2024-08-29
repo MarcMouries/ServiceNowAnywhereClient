@@ -27,7 +27,7 @@ if (isMock) {
   dataService.setDataSource(new NowDataSource());
 }
 
-console.log("Data source = ", dataService.dataSource.class);
+console.log("Data source = ", dataService.dataSource.constructor.name);
 
 export async function initializeApp() {
   console.log("%c① ① Initializing App", LOG_STYLE);
@@ -70,9 +70,9 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (payload) => {
 
 EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
   console.log(`%c⑧ App controller: Handling Table Selection: ${payload.tableName}`, LOG_STYLE);
-  const recordsList = await dataService.fetchRecordsForTable(payload.tableName);
-  model.setUserTableRecordList(payload.tableName, recordsList);
-  EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, { tableName: payload.tableName, recordsList });
+  const tableData = await dataService.fetchRecordsForTable(payload.tableName);
+  model.setUserTableRecordList(payload.tableName, tableData);
+  EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, { tableName: payload.tableName, tableData: tableData });
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
