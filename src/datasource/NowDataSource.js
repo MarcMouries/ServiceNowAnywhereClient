@@ -68,7 +68,7 @@ export class NowDataSource extends DataSource {
     const user = JSON.parse(localStorage.getItem("user"));
     const { username, authToken } = user;
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
-    const url = `${serviceNowUrl}/api/x_omni_server/useraccessservice/user-apps-access?username=${username}`;
+    const url = `${serviceNowUrl}/api/x_omni_server/service/user-apps-access?username=${username}`;
     console.log("Fetching user apps with URL:", url);
 
     const data = await this.fetchData(url, authToken);
@@ -86,7 +86,7 @@ export class NowDataSource extends DataSource {
     const user = JSON.parse(localStorage.getItem("user"));
     const { username, authToken } = user;
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
-    const url = `${serviceNowUrl}/api/x_omni_server/useraccessservice/user-app-tables-access?username=${username}&app_scope=${appScope}`;
+    const url = `${serviceNowUrl}/api/x_omni_server/service/user-app-tables-access?username=${username}&app_scope=${appScope}`;
     console.log("Fetching user tables with URL:", url);
 
     const data = await this.fetchData(url, authToken);
@@ -105,7 +105,18 @@ export class NowDataSource extends DataSource {
     const user = JSON.parse(localStorage.getItem("user"));
     const { username, authToken } = user;
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
-    const url = `${serviceNowUrl}/api/now/table/${tableName}`;
+
+    // get table schema
+    const urlTableSchema = `${serviceNowUrl}/api/x_omni_server/service/table-schema?table_name=${tableName}`;
+
+    const tableSchema = await this.fetchData(urlTableSchema, authToken);
+    console.log("tableSchema", tableSchema)
+
+    // get the list of records with the necessary fields per the list view.
+    const sysparm_fields = tableSchema.result.fields;
+
+    const url = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_fields=${encodeURIComponent(sysparm_fields)}`;
+
     console.log(`url = ${url}`);
 
     const data = await this.fetchData(url, authToken);
