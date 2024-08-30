@@ -92,45 +92,44 @@ class TableContent extends HTMLElement {
         this.attachShadow({ mode: "open" });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-        EventEmitter.on(EVENT_RECORD_LIST_UPDATED, ({ tableName, tableData }) => {
-          console.log(`%c⑩ TableContent: Updating content for: ${tableName}`, "color: white; background: darkblue;");
-          console.log("TableContent: Updating content with tableData: ", tableData);
-          this.setContent(tableName, tableData);
+        EventEmitter.on(EVENT_RECORD_LIST_UPDATED, (payload) => {
+          console.log(`%c⑩ TableContent: Updating content for: ${payload.tableName}`, "color: white; background: darkblue;");
+          console.log("TableContent: Updating content with tableData: ", payload);
+          this.setContent(payload.tableName, payload);
         });
     }
 
     setContent(appName, tableData) {
-      console.log("%c⑩ TableContent: setContent for " + appName, tableData);
-      console.log( "headers = ", tableData.schema.tableHeader);
-
-        const contentDiv = this.shadowRoot.querySelector(".table-container");
-
-      // fields: "label,description" => fieldsAsCSV
-      // create a new field
-
-        let tableHeaders = tableData.schema.tableHeader.map((field) => `<th>${field}</th>`).join("");
-
-        let tableRows = tableData.records.map((record, index) => `
-            <tr data-index="${index}">
-                ${data.fields.map((field) => `<td>${record[field]}</td>`).join("")}
-           </tr>`).join("");
-
-        contentDiv.innerHTML = `
-           <div class="header-row">
-             <h2>${appName}</h2>
-             <button id="add_new_record">Add ${appName}</button>
-           </div>
-           <table>
-             <thead>
-               <tr>
-                 ${tableHeaders}
-               </tr>
-             </thead>
-             <tbody>
-               ${tableRows}
-             </tbody>
-           </table>
-         `;
+      console.log(`%c⑩ TableContent: setContent for ${appName}`, 'color: darkblue;', tableData);
+  
+      // Build table headers
+      let tableHeaders = tableData.schema.columnLabels.map((label) => `<th>${label}</th>`).join("");
+  
+      // Build table rows
+      let tableRows = tableData.records.map((record, index) => `
+          <tr data-index="${index}">
+              ${tableData.schema.columnNames.map((name) => `<td>${record[name] || ''}</td>`).join("")}
+          </tr>`).join("");
+  
+      // Render the HTML table
+      const contentDiv = this.shadowRoot.querySelector(".table-container");
+      contentDiv.innerHTML = `
+          <div class="header-row">
+              <h2>${appName}</h2>
+              <button id="add_new_record">Add ${appName}</button>
+          </div>
+          <table>
+              <thead>
+                  <tr>
+                      ${tableHeaders}
+                  </tr>
+              </thead>
+              <tbody>
+                  ${tableRows}
+              </tbody>
+          </table>
+      `;
+  
 
          // Add event listeners for the button and table rows
          this.shadowRoot.querySelector('#add_new_record').addEventListener('click', () => {
