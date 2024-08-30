@@ -40,12 +40,5 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     console.log("envVars.username", envVars.username)
 
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const code = urlParams.get('code');
-    // const state = urlParams.get('state');
-
-    // if (code) {
-    //   fetchToken(code);
-    // }
   }
 });
