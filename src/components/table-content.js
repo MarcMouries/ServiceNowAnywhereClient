@@ -86,22 +86,31 @@ template.innerHTML = `
     <div class="table-container"></div>
 `;
 
-class AppContent extends HTMLElement {
+class TableContent extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-        EventEmitter.on(EVENT_RECORD_LIST_UPDATED, ({ itemName, records }) => {
-            console.log(`%c⑩ Updating content for: ${itemName}`, "color: white; background: darkblue;");
-            this.setContent(itemName, records);
+        EventEmitter.on(EVENT_RECORD_LIST_UPDATED, ({ tableName, tableData }) => {
+          console.log(`%c⑩ TableContent: Updating content for: ${tableName}`, "color: white; background: darkblue;");
+          console.log("TableContent: Updating content with tableData: ", tableData);
+          this.setContent(tableName, tableData);
         });
     }
 
-    setContent(appName, data) {
+    setContent(appName, tableData) {
+      console.log("%c⑩ TableContent: setContent for " + appName, tableData);
+      console.log( "headers = ", tableData.schema.tableHeader);
+
         const contentDiv = this.shadowRoot.querySelector(".table-container");
-        let tableHeaders = data.fields.map((field) => `<th>${field}</th>`).join("");
-        let tableRows = data.records.map((record, index) => `
+
+      // fields: "label,description" => fieldsAsCSV
+      // create a new field
+
+        let tableHeaders = tableData.schema.tableHeader.map((field) => `<th>${field}</th>`).join("");
+
+        let tableRows = tableData.records.map((record, index) => `
             <tr data-index="${index}">
                 ${data.fields.map((field) => `<td>${record[field]}</td>`).join("")}
            </tr>`).join("");
@@ -137,4 +146,4 @@ class AppContent extends HTMLElement {
        }
      }
 
-customElements.define("table-content", AppContent);
+customElements.define("table-content", TableContent);
