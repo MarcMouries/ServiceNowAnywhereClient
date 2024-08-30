@@ -47,7 +47,6 @@ export class Model {
   // Set and get the list of records for a specific table
   setUserTableRecordList(tableName, records) {
     this.userTableRecordList[tableName] = records;
-    EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, { tableName, records });
   }
 
   getUserTableRecordList(tableName) {
