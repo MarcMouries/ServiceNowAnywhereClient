@@ -108,18 +108,20 @@ export class NowDataSource extends DataSource {
 
     // get table schema
     const urlTableSchema = `${serviceNowUrl}/api/x_omni_server/service/table-schema?table_name=${tableName}`;
-
     const tableSchema = await this.fetchData(urlTableSchema, authToken);
     console.log("tableSchema", tableSchema)
 
     // get the list of records with the necessary fields per the list view.
     const sysparm_fields = tableSchema.result.fields;
 
-    const url = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_fields=${encodeURIComponent(sysparm_fields)}`;
+    const urlTableRecords = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_fields=${encodeURIComponent(sysparm_fields)}`;
+    const tableRecords = await this.fetchData(urlTableRecords, authToken);
+    console.log("tableRecords", tableRecords)
 
-    console.log(`url = ${url}`);
-
-    const data = await this.fetchData(url, authToken);
+    return { 
+      schema: tableSchema.result,
+      records: tableRecords.result
+    }
     if (data && data.result && Array.isArray(data.result)) {
       console.log("Fetched records:", data.result);
       return data.result;
