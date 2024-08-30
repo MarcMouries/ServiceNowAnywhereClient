@@ -57,8 +57,7 @@ export class NowDataSource extends DataSource {
       localStorage.setItem("serviceNowUrl", serviceNowUrl);
 
       EventEmitter.emit(EVENT_SYS_AUTHENTICATED_USER, user);
-    }
-    else {
+    } else {
       EventEmitter.emit(EVENT_AUTH_FAILED, "Could not authenticate " + username);
     }
   }
@@ -100,34 +99,17 @@ export class NowDataSource extends DataSource {
   }
 
   async fetchRecordsForTable(tableName) {
-    console.log(`Fetching records for table ${tableName}`);
+    console.log(`Fetching table data for ${tableName}`);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    const { username, authToken } = user;
+    const { authToken } = user;
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
 
-    // get table schema
-    const urlTableSchema = `${serviceNowUrl}/api/x_omni_server/service/table-schema?table_name=${tableName}`;
-    const tableSchema = await this.fetchData(urlTableSchema, authToken);
-    console.log("tableSchema", tableSchema)
+    // Get table data (schema + records) in a single call
+    const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/table-data?table_name=${tableName}`;
+    const tableData = await this.fetchData(urlTableData, authToken);
+    console.log("Fetched table data:", tableData);
 
-    // get the list of records with the necessary fields per the list view.
-    const sysparm_fields = tableSchema.result.fields;
-
-    const urlTableRecords = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_fields=${encodeURIComponent(sysparm_fields)}`;
-    const tableRecords = await this.fetchData(urlTableRecords, authToken);
-    console.log("tableRecords", tableRecords)
-
-    return { 
-      schema: tableSchema.result,
-      records: tableRecords.result
-    }
-    if (data && data.result && Array.isArray(data.result)) {
-      console.log("Fetched records:", data.result);
-      return data.result;
-    } else {
-      console.error("Unexpected data format or no records found");
-      return [];
-    }
+    return tableData.result;
   }
 }
