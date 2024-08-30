@@ -72,7 +72,7 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
   console.log(`%c⑧ App controller: Handling Table Selection: ${payload.tableName}`, LOG_STYLE);
   const tableData = await dataService.fetchRecordsForTable(payload.tableName);
   model.setUserTableRecordList(payload.tableName, tableData);
-  EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, { tableName: payload.tableName, tableData: tableData });
+  EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, tableData);
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
