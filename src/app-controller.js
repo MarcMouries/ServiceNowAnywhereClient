@@ -17,7 +17,16 @@ import {
 } from "./EventTypes";
 import { EventEmitter } from "./EventEmitter";
 
-const model = new Model();
+// Initialize the global namespace if it doesn't exist
+window.OMNI = window.OMNI || {};
+
+// Initialize the model and set it to the global namespace
+window.OMNI.model = new Model();
+
+const model = window.OMNI.model;  // Use the globally accessible model
+
+console.log("window.OMNI.model");
+console.log(window.OMNI.model);
 
 const isMock = false;
 
@@ -45,6 +54,8 @@ EventEmitter.on(EVENT_SYS_AUTHENTICATED_USER, async (user) => {
   const appNames = userAppsList.map((app) => app.appName);
   console.log(`%c⑥ Controller: Apps fetched for user: ${user.name} = ${appNames.join(", ")}`, LOG_STYLE);
   model.setUserAppsList(userAppsList);
+  console.log("window.OMNI.model");
+console.log(window.OMNI.model);
 
   console.log(`%c⑦ Controller: Current location ${window.location.href}`, LOG_STYLE);
   EventEmitter.emit(EVENT_SYS_FETCHED_USER_APPS, { appList: userAppsList });
@@ -66,6 +77,8 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (payload) => {
   const tableList = await dataService.fetchTablesForApp(payload.appScope);
   model.setUserTablesList(payload.appScope, tableList);
   EventEmitter.emit(EVENT_SYS_FETCHED_USER_TABLES, { appScope: payload.appScope, tableList });
+  console.log("window.OMNI.model");
+console.log(window.OMNI.model);
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
@@ -73,6 +86,8 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
   const tableData = await dataService.fetchRecordsForTable(payload.tableName);
   model.setUserTableRecordList(payload.tableName, tableData);
   EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, tableData);
+  console.log("window.OMNI.model");
+console.log(window.OMNI.model);
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
