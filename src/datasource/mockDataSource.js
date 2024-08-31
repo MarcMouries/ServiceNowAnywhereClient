@@ -14,7 +14,7 @@ export class MockDataSource extends DataSource {
       authToken: 'mock-token'
     };
 
-    window.NOW_ANYWHERE.user = user;
+    window.OMNI.user = user;
     localStorage.setItem('user', JSON.stringify(user));
     EventEmitter.emit(EVENT_SYS_AUTHENTICATED_USER, user);
   }
