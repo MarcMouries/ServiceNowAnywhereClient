@@ -3,7 +3,9 @@ import { LOG_STYLE } from './LogStyles';
 
 const { invoke } = window.__TAURI__.core;
 
-window.NOW_ANYWHERE = {};
+window.OMNI = window.OMNI || {};
+window.OMNI.config = window.OMNI.config || {};
+window.OMNI.auth = window.OMNI.auth || {};
 
 async function initializeApp() {
   console.log('%c⑭ Initializing App', LOG_STYLE);
@@ -20,14 +22,20 @@ async function initializeApp() {
   console.log('USERNAME..:', username);
   console.log('PASSWORD..:', password);
 
-  window.NOW_ANYWHERE = { redirectUri, serviceNowUrl, username, password };
-  console.log("window.NOW_ANYWHERE ", window.NOW_ANYWHERE);
+  window.OMNI.config.redirectUri = redirectUri;
+  window.OMNI.config.serviceNowUrl = serviceNowUrl;
+  window.OMNI.auth.username = username;
+  window.OMNI.auth.password = password;
+
+
+  console.log("window.OMNI ", window.OMNI);
+  console.log("window.OMNI ", window.OMNI);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
   console.log('%c⑮ DOM Content Loaded in main.js', LOG_STYLE);
   await initializeApp();
-  const envVars = window.NOW_ANYWHERE;
+  const authVars = window.OMNI.auth;
 
   // set the username and password for testing
   console.log("set the username and password for testing")
@@ -35,10 +43,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   const passwordInput = document.getElementById('user_password');
 
   if (usernameInput && passwordInput) {
-    usernameInput.value = envVars.username || '';
-    passwordInput.value = envVars.password || '';
+    usernameInput.value = authVars.username || '';
+    passwordInput.value = authVars.password || '';
 
-    console.log("envVars.username", envVars.username)
+    console.log("authVars.username", authVars.username)
 
   }
 });

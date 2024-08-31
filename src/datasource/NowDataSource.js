@@ -33,7 +33,7 @@ export class NowDataSource extends DataSource {
   async authenticateUser(username, password) {
     console.log("Using NowDataSource data source for authentication");
 
-    const { serviceNowUrl } = window.NOW_ANYWHERE;
+    const { serviceNowUrl } = window.OMNI.config;
     const credentials = btoa(`${username}:${password}`);
     const tableName = "sys_user";
     const sysparm_fields = "name,email,sys_id";
