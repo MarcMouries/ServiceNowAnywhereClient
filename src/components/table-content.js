@@ -28,6 +28,21 @@ template.innerHTML = `
             margin: 0;
             color: var(--table-th-color);
         }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-left: auto;
+        }
+        .actions button {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            cursor: pointer;
+            font-family: "Poppins", sans-serif !important;
+            font-size: 1rem;
+            padding: 6px 8px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -43,21 +58,21 @@ template.innerHTML = `
             padding: 10px;
             text-align: left;
             text-transform: uppercase;
-          }
+        }
         td {
-          padding: 10px;
-          border: 1px solid var(--table-border);
-          text-align: left;
+            padding: 10px;
+            border: 1px solid var(--table-border);
+            text-align: left;
         }
         tr {
-          color: var(--table-tr-color);
+            color: var(--table-tr-color);
         }
         tr:hover td {
             border-inline: 1px solid var(--accent-bright);
             cursor: pointer;
         }
         tr:nth-child(even) {
-          background-color: var(--table-tr-even);
+            background-color: var(--table-tr-even);
         }
         /* Apply border-radius to the first column's left border */
         table tr td:first-child {
@@ -69,17 +84,6 @@ template.innerHTML = `
         table tr td:last-child {
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
-        }
-
-        .container button {
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: var(--border-radius);
-            color: var(--text-color);
-            cursor: pointer;
-            font-family: "Poppins", sans-serif !important;
-            font-size: 1rem;
-            padding: 6px 8px;
         }
     </style>
 
@@ -117,23 +121,25 @@ class TableContent extends HTMLElement {
       contentDiv.innerHTML = `
         <div class="header-row">
             <h2>${table.label}</h2>  <!-- Display the table's label here -->
-            <button id="add_new_record">Add ${table.label}</button>
+            <div class="actions">
+                <button id="add_new_record">Add ${table.label}</button>
+            </div>
         </div>
         <table>
             <thead><tr>${tableHeaders}</tr></thead>
             <tbody>${tableRows}</tbody>
-          </table>
+        </table>
       `;
 
          // Add event listeners for the button and table rows
          this.shadowRoot.querySelector('#add_new_record').addEventListener('click', () => {
-            EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, app.name);
+            EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, table.name);
         });
 
          this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
            row.addEventListener('click', () => {
              const rowIndex = row.getAttribute('data-index');
-             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { appName: app.name, rowIndex });
+             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { tableName: table.name, rowIndex });
             });
          });
        }
