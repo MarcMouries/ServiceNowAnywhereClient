@@ -102,7 +102,7 @@ class SideBar extends HTMLElement {
 
         EventEmitter.on(EVENT_SYS_FETCHED_USER_TABLES, (payload) => {
             console.log("Sidebar: Updating table list with payload: ", payload);
-            this.setTables(payload.appScope, payload.tableList);
+            this.setTables(payload.app, payload.tableList);
         });
 
     }
@@ -152,15 +152,17 @@ class SideBar extends HTMLElement {
         });
     }
 
-    setTables(appName, tableList) {
-        console.log("Sidebar: setTables with appName: ", appName);
+    setTables(app, tableList) {
+        console.log("Sidebar: setTables with app: ", app);
         console.log("Sidebar: setTables with tableList: ", tableList);
-        const appContainer = this.shadowRoot.querySelector(`.app-container[data-app-scope="${appName}"]`);
+        const appContainer = this.shadowRoot.querySelector(`.app-container[data-app-scope="${app.appScope}"]`);
         if (!appContainer) return;
         const nestedDiv = appContainer.querySelector('.nested');
         nestedDiv.innerHTML = '';
         tableList.forEach((table) => {
             this.addItem(table.label, 'fas fa-table', (div) => this.handleTableClick(div, table), 'table', nestedDiv);
+
+
         });
     }
 
@@ -174,14 +176,14 @@ class SideBar extends HTMLElement {
     handleAppClick(div, appContainer, app) {
         this.updateActiveClass(div, 'app-item');
         console.log(`%cSideBar: Handling app click: ${app.appName} with scope: ${app.appScope}`, 'color: white; background: darkblue;');
-        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, { appName: app.appName, appScope: app.appScope });
+        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, app);
         appContainer.classList.toggle('active');
     }
 
     handleTableClick(div, table) {
         this.updateActiveClass(div, 'table-item');
         console.log(`%cSideBar: Handling table click: ${table.label} (${table.name})`, 'color: white; background: darkblue;');
-        EventEmitter.emit(EVENT_USER_CLICKED_ON_TABLE, { tableName: table.name });
+        EventEmitter.emit(EVENT_USER_CLICKED_ON_TABLE, { table });
     }
 
     updateActiveClass(activeDiv, itemType) {
