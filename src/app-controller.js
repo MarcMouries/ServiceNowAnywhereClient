@@ -76,18 +76,14 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (payload) => {
   console.log(`%c⑧ App controller: Handling app selection: ${payload.appName}`, LOG_STYLE);
   const tableList = await dataService.fetchTablesForApp(payload.appScope);
   model.setUserTablesList(payload.appScope, tableList);
-  EventEmitter.emit(EVENT_SYS_FETCHED_USER_TABLES, { appScope: payload.appScope, tableList });
-  console.log("window.OMNI.model");
-console.log(window.OMNI.model);
+  EventEmitter.emit(EVENT_SYS_FETCHED_USER_TABLES, { app: payload, tableList });
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
-  console.log(`%c⑧ App controller: Handling Table Selection: ${payload.tableName}`, LOG_STYLE);
-  const tableData = await dataService.fetchRecordsForTable(payload.tableName);
-  model.setUserTableRecordList(payload.tableName, tableData);
-  EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, tableData);
-  console.log("window.OMNI.model");
-console.log(window.OMNI.model);
+  console.log(`%c⑧ App controller: Handling Table Selection: ${payload.table.label}`, LOG_STYLE);
+  const tableData = await dataService.fetchRecordsForTable(payload.table.name);
+  model.setUserTableRecordList(payload.table.name, tableData);
+  EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, { table: payload.table, tableData });
 });
 
 EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
