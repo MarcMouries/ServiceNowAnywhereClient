@@ -95,12 +95,13 @@ class TableContent extends HTMLElement {
         EventEmitter.on(EVENT_RECORD_LIST_UPDATED, (payload) => {
           console.log(`%c⑩ TableContent: Updating content for: ${payload.tableName}`, "color: white; background: darkblue;");
           console.log("TableContent: Updating content with tableData: ", payload);
-          this.setContent(payload.tableName, payload);
+          this.setContent(payload.table, payload.tableData);
         });
     }
 
-    setContent(appName, tableData) {
-      console.log(`%c⑩ TableContent: setContent for ${appName}`, 'color: darkblue;', tableData);
+    setContent(table, tableData) {
+        console.log(`%c⑩ TableContent: setContent for `, table);
+        console.log(`%c⑩ TableContent: setContent for ${table.name}`, 'color: darkblue;', tableData);
   
       // Build table headers
       let tableHeaders = tableData.schema.columnLabels.map((label) => `<th>${label}</th>`).join("");
@@ -114,33 +115,26 @@ class TableContent extends HTMLElement {
       // Render the HTML table
       const contentDiv = this.shadowRoot.querySelector(".table-container");
       contentDiv.innerHTML = `
-          <div class="header-row">
-              <h2>${appName}</h2>
-              <button id="add_new_record">Add ${appName}</button>
-          </div>
-          <table>
-              <thead>
-                  <tr>
-                      ${tableHeaders}
-                  </tr>
-              </thead>
-              <tbody>
-                  ${tableRows}
-              </tbody>
+        <div class="header-row">
+            <h2>${table.label}</h2>  <!-- Display the table's label here -->
+            <button id="add_new_record">Add ${table.label}</button>
+        </div>
+        <table>
+            <thead><tr>${tableHeaders}</tr></thead>
+            <tbody>${tableRows}</tbody>
           </table>
       `;
-  
 
          // Add event listeners for the button and table rows
          this.shadowRoot.querySelector('#add_new_record').addEventListener('click', () => {
-           EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, appName);
-         });
+            EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, app.name);
+        });
 
          this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
            row.addEventListener('click', () => {
              const rowIndex = row.getAttribute('data-index');
-             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { appName, rowIndex });
-           });
+             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { appName: app.name, rowIndex });
+            });
          });
        }
      }
