@@ -139,7 +139,7 @@ class TableContent extends HTMLElement {
          this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
            row.addEventListener('click', () => {
              const rowIndex = row.getAttribute('data-index');
-             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { tableName: table.name, rowIndex });
+             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { tableName: table.name, rowIndex: rowIndex });
             });
          });
        }

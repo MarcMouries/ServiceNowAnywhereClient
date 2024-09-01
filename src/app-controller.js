@@ -90,6 +90,8 @@ EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
   console.log(`%cUSER_CLICKED_NEW_RECORD_BUTTON: ${appName}`, "color: white; background: darkblue;");
 });
 
-EventEmitter.on(EVENT_USER_CLICKED_RECORD_ROW, ({ appName, rowIndex }) => {
-  console.log(`%cUSER_CLICKED_RECORD_ROW: ${appName}, Row Index: ${rowIndex}`, "color: white; background: darkblue;");
+EventEmitter.on(EVENT_USER_CLICKED_RECORD_ROW, ( payload ) => {
+  const { tableName, rowIndex } = payload;
+  console.log(`%cUSER_CLICKED_RECORD_ROW: ${tableName}, Row Index: ${rowIndex}`, "color: white; background: darkblue;");
 });
+
