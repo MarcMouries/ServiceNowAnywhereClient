@@ -21,8 +21,11 @@ class DataService {
     return this.dataSource.fetchTablesForApp(appName);
   }
 
-  async fetchRecordsForTable(tableName) {
-    return this.dataSource.fetchRecordsForTable(tableName);
+  async fetchListOfRecords(tableName) {
+    return this.dataSource.fetchListOfRecords(tableName);
+  }
+  async fetchSingleRecord(tableName, sysId) {
+    return this.dataSource.fetchSingleRecord(tableName);
   }
 }
 

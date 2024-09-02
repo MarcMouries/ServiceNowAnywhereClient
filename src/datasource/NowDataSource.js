@@ -98,18 +98,34 @@ export class NowDataSource extends DataSource {
     }
   }
 
-  async fetchRecordsForTable(tableName) {
-    console.log(`Fetching table data for ${tableName}`);
+  async fetchListOfRecords(tableName) {
+    console.log(`Fetching all records for table: ${tableName}`);
 
     const user = JSON.parse(localStorage.getItem("user"));
     const { authToken } = user;
     const serviceNowUrl = localStorage.getItem("serviceNowUrl");
 
     // Get table data (schema + records) in a single call
-    const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/table-data?table_name=${tableName}`;
+    const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}`;
     const tableData = await this.fetchData(urlTableData, authToken);
     console.log("Fetched table data:", tableData);
 
     return tableData.result;
   }
+
+  async fetchSingleRecord(tableName, sysId) {
+    console.log(`Fetching SingleRecord for table: ${tableName} and sysId ${sysId}`);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const { authToken } = user;
+    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
+
+    // Get table data (schema + records) in a single call
+    const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}?sys_id=${sysId}`;
+    const tableData = await this.fetchData(urlTableData, authToken);
+    console.log("Fetched table data:", tableData);
+
+    return tableData.result;
+  }
+  
 }

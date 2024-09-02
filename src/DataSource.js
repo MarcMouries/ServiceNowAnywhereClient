@@ -12,7 +12,10 @@ export class DataSource {
       throw new Error('fetchTablesForApp method not implemented');
     }
 
-    async fetchRecordsForTable(tableName) {
-      throw new Error('fetchRecordsForTable method not implemented');
+    async fetchListOfRecords(tableName) {
+      throw new Error('fetchListOfRecords method not implemented');
+    }
+    async fetchSingleRecord(tableName, sysId) {
+      throw new Error('fetchListOfRecords method not implemented');
     }
   }
