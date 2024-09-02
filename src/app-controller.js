@@ -12,8 +12,8 @@ import {
   EVENT_USER_CLICKED_ON_APP,
   EVENT_USER_CLICKED_ON_TABLE,
   EVENT_RECORD_LIST_UPDATED,
-  EVENT_USER_CLICKED_RECORD_ROW,
-  EVENT_USER_CLICKED_NEW_RECORD_BUTTON,
+  EVENT_USER_CLICKED_RECORD,
+  EVENT_USER_CLICKED_NEW_RECORD,
 } from "./EventTypes";
 import { EventEmitter } from "./EventEmitter";
 
@@ -81,17 +81,20 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_APP, async (payload) => {
 
 EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
   console.log(`%c⑧ App controller: Handling Table Selection: ${payload.table.label}`, LOG_STYLE);
-  const tableData = await dataService.fetchRecordsForTable(payload.table.name);
+  const tableData = await dataService.fetchListOfRecords(payload.table.name);
   model.setUserTableRecordList(payload.table.name, tableData);
   EventEmitter.emit(EVENT_RECORD_LIST_UPDATED, { table: payload.table, tableData });
 });
 
-EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, (appName) => {
-  console.log(`%cUSER_CLICKED_NEW_RECORD_BUTTON: ${appName}`, "color: white; background: darkblue;");
+
+EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD, (appName) => {
+  console.log(`%cController: USER_CLICKED_NEW_RECORD: ${appName}`, "color: white; background: darkblue;");
 });
 
-EventEmitter.on(EVENT_USER_CLICKED_RECORD_ROW, ( payload ) => {
-  const { tableName, rowIndex } = payload;
-  console.log(`%cUSER_CLICKED_RECORD_ROW: ${tableName}, Row Index: ${rowIndex}`, "color: white; background: darkblue;");
+
+EventEmitter.on(EVENT_USER_CLICKED_RECORD, ( payload ) => {
+  const { tableName, sysId } = payload;
+  console.log(`%cController: USER_CLICKED_RECORD: ${tableName}, sysId: ${sysId}`, "color: white; background: darkblue;");
 });
+
 

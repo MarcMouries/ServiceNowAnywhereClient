@@ -1,9 +1,9 @@
 // src/components/table-content.js
 import { EVENT_RECORD_LIST_UPDATED } from "../EventTypes.ts";
-import { EVENT_USER_CLICKED_RECORD_ROW, EVENT_USER_CLICKED_NEW_RECORD_BUTTON } from '../EventTypes';
-import { EventEmitter } from '../EventEmitter.ts';
+import { EVENT_USER_CLICKED_RECORD, EVENT_USER_CLICKED_NEW_RECORD } from "../EventTypes";
+import { EventEmitter } from "../EventEmitter.ts";
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = `
     <style>
         :host {
@@ -91,34 +91,34 @@ template.innerHTML = `
 `;
 
 class TableContent extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: "open" });
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-        EventEmitter.on(EVENT_RECORD_LIST_UPDATED, (payload) => {
-          console.log(`%c⑩ TableContent: Updating content for: ${payload.tableName}`, "color: white; background: darkblue;");
-          console.log("TableContent: Updating content with tableData: ", payload);
-          this.setContent(payload.table, payload.tableData);
-        });
-    }
+    EventEmitter.on(EVENT_RECORD_LIST_UPDATED, (payload) => {
+      console.log(`%c⑩ TableContent: Updating content for: ${payload.tableName}`, "color: white; background: darkblue;");
+      console.log("TableContent: Updating content with tableData: ", payload);
+      this.setContent(payload.table, payload.tableData);
+    });
+  }
 
-    setContent(table, tableData) {
-        console.log(`%c⑩ TableContent: setContent for `, table);
-        console.log(`%c⑩ TableContent: setContent for ${table.name}`, 'color: darkblue;', tableData);
-  
-      // Build table headers
-      let tableHeaders = tableData.schema.columnLabels.map((label) => `<th>${label}</th>`).join("");
-  
-      // Build table rows
-      let tableRows = tableData.records.map((record, index) => `
-          <tr data-index="${index}">
-              ${tableData.schema.columnNames.map((name) => `<td>${record[name] || ''}</td>`).join("")}
-          </tr>`).join("");
-  
-      // Render the HTML table
-      const contentDiv = this.shadowRoot.querySelector(".table-container");
-      contentDiv.innerHTML = `
+  setContent(table, tableData) {
+    console.log(`%c⑩ TableContent: setContent for `, table);
+    console.log(`%c⑩ TableContent: setContent for ${table.name}`, "color: darkblue;", tableData);
+
+    // Build table headers
+    let tableHeaders = tableData.schema.map((column) => `<th>${column.label}</th>`).join("");
+
+    // Build table rows
+    let tableRows = tableData.records.map((record, index) => `
+        <tr data-index="${index}" data-sys-id="${record.sys_id}">
+            ${tableData.schema.map((column) => `<td>${record[column.name] || ""}</td>`).join("")}
+        </tr>`).join("");
+
+    // Render the HTML table
+    const contentDiv = this.shadowRoot.querySelector(".table-container");
+    contentDiv.innerHTML = `
         <div class="header-row">
             <h2>${table.label}</h2>  <!-- Display the table's label here -->
             <div class="actions">
@@ -131,18 +131,19 @@ class TableContent extends HTMLElement {
         </table>
       `;
 
-         // Add event listeners for the button and table rows
-         this.shadowRoot.querySelector('#add_new_record').addEventListener('click', () => {
-            EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD_BUTTON, table.name);
-        });
+    // Add event listeners for the button and table rows
+    this.shadowRoot.querySelector("#add_new_record").addEventListener("click", () => {
+      EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD, table.name);
+    });
 
-         this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
-           row.addEventListener('click', () => {
-             const rowIndex = row.getAttribute('data-index');
-             EventEmitter.emit(EVENT_USER_CLICKED_RECORD_ROW, { tableName: table.name, rowIndex: rowIndex });
-            });
-         });
-       }
-     }
+    this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('click', () => {
+            const sysId = row.getAttribute('data-sys-id');
+            EventEmitter.emit(EVENT_USER_CLICKED_RECORD, { tableName: table.name, sysId: sysId });
+        });
+    });
+    
+  }
+}
 
 customElements.define("table-content", TableContent);
