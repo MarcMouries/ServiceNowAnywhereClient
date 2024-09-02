@@ -22,6 +22,7 @@ template.innerHTML = `
 
 <side-bar home-location="./workspace.html"></side-bar>
 <table-content></table-content>
+<record-view></record-view>
 `;
 
 class AppView extends HTMLElement {
