@@ -7,16 +7,10 @@ const template = document.createElement("template");
 template.innerHTML = `
     <style>
         :host {
-            font-family: "Poppins", sans-serif !important;
             background-color: var(--content-color);
-        }
-        .table-container {
-            padding: 15px;
-            padding-bottom: 20px;
-            line-height: 1.5;
-            background-color: var(--container-color);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-family: "Poppins", sans-serif !important;
+            width: 100%;
+            padding: 10px;
         }
         .header-row {
             display: flex;
@@ -42,6 +36,16 @@ template.innerHTML = `
             font-family: "Poppins", sans-serif !important;
             font-size: 1rem;
             padding: 6px 8px;
+        }
+
+        .table-container {
+            background-color: var(--container-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+            padding-bottom: 20px;
+            line-height: 1.5;
+
         }
         table {
             width: 100%;
@@ -77,10 +81,10 @@ template.innerHTML = `
             border-right: 1px solid var(--accent-bright);
         }
         tr:hover td:first-child {
-            border-left: 1px solid var(--accent-bright); 
+            border-left: 1px solid var(--accent-bright);
         }
         tr:hover td:last-child {
-            border-right: 1px solid var(--accent-bright); 
+            border-right: 1px solid var(--accent-bright);
         }
         tr:nth-child(even) {
             background-color: var(--table-tr-even);
@@ -106,16 +110,22 @@ class ListView extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+
+  connectedCallback() {
+    this.tableName = this.getAttribute('table-name');
 
     EventEmitter.on(EVENT_RECORD_LIST_UPDATED, (payload) => {
-      console.log(`%c⑩ ListView: Updating content for: ${payload.tableName}`, "color: white; background: darkblue;");
-      console.log("ListView: Updating content with tableData: ", payload);
-      this.setContent(payload.table, payload.tableData);
+        console.log(`%c⑩ ListView: Updating content for: ${payload.tableName}`, "color: white; background: darkblue;");
+        console.log("ListView: Updating content with tableData: ", payload);
+
+      if (payload.table.name === this.tableName) {
+        this.setContent(payload.table, payload.tableData);
+      }
     });
   }
 
   setContent(table, tableData) {
-    console.log(`%c⑩ ListView: setContent for `, table);
     console.log(`%c⑩ ListView: setContent for ${table.name}`, "color: darkblue;", tableData);
 
     // Build table headers
@@ -131,7 +141,7 @@ class ListView extends HTMLElement {
     const contentDiv = this.shadowRoot.querySelector(".table-container");
     contentDiv.innerHTML = `
         <div class="header-row">
-            <h2>${table.label}</h2> 
+            <h2>${table.label}</h2>
             <div class="actions">
                 <button id="add_new_record">Add ${table.label}</button>
             </div>
