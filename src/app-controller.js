@@ -14,6 +14,7 @@ import {
   EVENT_RECORD_LIST_UPDATED,
   EVENT_USER_CLICKED_RECORD,
   EVENT_USER_CLICKED_NEW_RECORD,
+  EVENT_SYS_FETCHED_SINGLE_RECORD
 } from "./EventTypes";
 import { EventEmitter } from "./EventEmitter";
 
@@ -87,14 +88,17 @@ EventEmitter.on(EVENT_USER_CLICKED_ON_TABLE, async (payload) => {
 });
 
 
-EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD, (appName) => {
+EventEmitter.on(EVENT_USER_CLICKED_NEW_RECORD, async (appName) => {
   console.log(`%cController: USER_CLICKED_NEW_RECORD: ${appName}`, "color: white; background: darkblue;");
 });
 
+EventEmitter.on(EVENT_USER_CLICKED_RECORD, async (payload) => {
+  const { table, sysId } = payload;
+  console.log(`%cController: USER_CLICKED_RECORD: ${table.name}, sysId: ${sysId}`, "color: white; background: darkblue;");
+  const recordData = await dataService.fetchSingleRecord(table.name, sysId);
+  console.log(`%cController: fetched record data: `, recordData);
 
-EventEmitter.on(EVENT_USER_CLICKED_RECORD, ( payload ) => {
-  const { tableName, sysId } = payload;
-  console.log(`%cController: USER_CLICKED_RECORD: ${tableName}, sysId: ${sysId}`, "color: white; background: darkblue;");
+  EventEmitter.emit(EVENT_SYS_FETCHED_SINGLE_RECORD, { table, recordData });
 });
 
 
