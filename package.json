@@ -8,6 +8,7 @@
     "build": "bun build ./src/bundle.js --outfile=./dist/bundle.js && bun run copy-assets.js"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^15.7.3",
     "@tauri-apps/cli": "^2.0.0-rc.10"
   },
   "dependencies": {
