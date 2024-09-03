@@ -1,6 +1,8 @@
-import './components/sideBar.js';
-import './components/table-content.js';
 import './components/online-status.js';
+import './components/sideBar.js';
+import './components/ListView.js';
+import './components/RecordView';
+import './components/router';
 import './app-model.js';
 import './app-view.js';
 import './main.js';
