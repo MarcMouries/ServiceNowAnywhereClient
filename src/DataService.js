@@ -25,7 +25,7 @@ class DataService {
     return this.dataSource.fetchListOfRecords(tableName);
   }
   async fetchSingleRecord(tableName, sysId) {
-    return this.dataSource.fetchSingleRecord(tableName);
+    return this.dataSource.fetchSingleRecord(tableName, sysId);
   }
 }
 
