@@ -14,15 +14,23 @@ template.innerHTML = `
   side-bar {
       width: 20%;
   }
-  table-content {
+  main {
       width: 80%;
-      padding: 20px;
-  }
+      padding: 10px;
+      background: slategray;
+      display: flex;
+}
+.hidden {
+  display: none;
+}
+
 </style>
 
 <side-bar home-location="./workspace.html"></side-bar>
-<table-content></table-content>
-<record-view></record-view>
+<main>
+  <list-view></list-view>
+  <record-view></record-view>
+</main>
 `;
 
 class AppView extends HTMLElement {
