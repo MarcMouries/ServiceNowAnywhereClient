@@ -7,24 +7,26 @@ class Router {
 
     init() {
         window.addEventListener('popstate', () => this.handleLocation());
-        this.handleLocation();
+        // EventEmitter.on('navigate', (path, payload) => {
+        //     this.navigate(path, payload);
+        // });
     }
 
-    handleLocation() {
+    handleLocation(payload = {}) {
         const path = window.location.pathname;
         const matchedRoute = this.matchRoute(path);
         if (matchedRoute) {
-            matchedRoute.route(matchedRoute.params);
+            matchedRoute.route({ ...matchedRoute.params, ...payload });
         } else if (this.routes['/']) {
-            this.routes['/'](); // Call the default route if available
+            this.routes['/'](payload); // Call the default route if available
         } else {
             console.error('No matching route found and no default route defined.');
         }
     }
 
-    navigate(path) {
+    navigate(path, payload = {}) {
         window.history.pushState({}, path, window.location.origin + path);
-        this.handleLocation();
+        this.handleLocation(payload);
     }
 
     matchRoute(path) {
