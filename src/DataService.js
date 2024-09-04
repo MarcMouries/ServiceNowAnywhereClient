@@ -27,6 +27,9 @@ class DataService {
   async fetchSingleRecord(tableName, sysId) {
     return this.dataSource.fetchSingleRecord(tableName, sysId);
   }
+  async updateRecord(table, sysId, data){
+    return this.dataSource.updateRecord(table, sysId, data);
+  }
 }
 
 export const dataService = new DataService();
