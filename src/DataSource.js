@@ -18,4 +18,8 @@ export class DataSource {
     async fetchSingleRecord(tableName, sysId) {
       throw new Error('fetchListOfRecords method not implemented');
     }
+
+    async updateRecord(table, sysId, data){
+      throw new Error('updateRecord method not implemented');
+    }
   }
