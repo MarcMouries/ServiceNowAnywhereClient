@@ -102,6 +102,9 @@ EventEmitter.on(EVENT_USER_CLICKED_RECORD, async (payload) => {
 
 EventEmitter.on(EVENT_USER_CLICKED_SAVE_BUTTON, async (payload) => {
   console.log("Controller: EVENT_USER_CLICKED_SAVE_BUTTON: ", payload);
+  const { table, sysId, data } = payload;
+  console.log(`%cController: EVENT_USER_CLICKED_SAVE_BUTTON: ${table.name}, sysId: ${sysId}`, "color: white; background: darkblue;");
+  const response = await dataService.updateRecord(table.name, sysId, data);
 });
 
 
