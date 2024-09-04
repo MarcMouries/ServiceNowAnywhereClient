@@ -61,6 +61,7 @@ template.innerHTML = `
             font-size: 0.9rem;
             border: 1px solid var(--table-border);
             border-radius: 5px;
+            background-color: var(--off-white);
         }
         button {
             margin-top: 15px;
@@ -82,6 +83,8 @@ class RecordView extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.tableName = null;
     this.recordData = null;
+    this.formContainer = this.shadowRoot.querySelector(".form-container");
+
   }
 
   connectedCallback() {
@@ -94,47 +97,40 @@ class RecordView extends HTMLElement {
   }
 
   displayRecord(table, recordData) {
-    console.log("RecordView: displayRecord", recordData);
-
-    if (!recordData || !recordData.record) {
-      console.error("No record data received to display.");
+    if (!recordData || !recordData.record || !recordData.record.sys_id) {
+      console.error("No record data or sys_id received to display.");
       return;
     }
 
+    console.log("displayRecord this.formContainer: ", this.formContainer);
+
+    this.table = table;
+    this.sysId = recordData.record.sys_id;
+
     // Clear existing content in the form container
-    const formContainer = this.shadowRoot.querySelector(".form-container");
-    formContainer.innerHTML = "";
+    // const formContainer = this.shadowRoot.querySelector(".form-container");
+    this.formContainer.innerHTML = "";
 
     // Create header and save button
     const headerRow = document.createElement("div");
     headerRow.classList.add("header-row");
     headerRow.innerHTML = `
-            <h2>${table.label}</h2> 
-            <div class="actions">
-                <button id="save_record">Save</button>
-            </div>
-        `;
+        <h2>${table.label}</h2> 
+        <div class="actions">
+            <button id="save_record">Save</button>
+        </div>
+    `;
 
-    // Append header to the form container
-    formContainer.appendChild(headerRow);
+    this.formContainer.appendChild(headerRow);
 
-    // Create the form
     const form = document.createElement("form");
 
-    // Build and append form fields
     const builtForm = this.buildForm(table, recordData);
     form.appendChild(builtForm);
 
-    // Append the form to the form container
-    formContainer.appendChild(form);
+    this.formContainer.appendChild(form);
 
     // Add event listener for the save button
-    this.shadowRoot.querySelector("#save_record").addEventListener("click", (e) => {
-      e.preventDefault();
-      this.handleSave();
-    });
-
-    // Add event listeners for the button and table rows
     this.shadowRoot.querySelector("#save_record").addEventListener("click", (e) => {
       e.preventDefault();
       this.handleSave();
@@ -144,6 +140,7 @@ class RecordView extends HTMLElement {
   buildForm(table, recordData) {
     const fragment = document.createDocumentFragment();
 
+    // Build and append form fields
     recordData.schema.forEach((field) => {
       const fieldType = this.getFieldType(field);
 
@@ -153,20 +150,7 @@ class RecordView extends HTMLElement {
       const label = document.createElement("label");
       label.textContent = field.label;
 
-      let input;
-      if (fieldType === "textarea") {
-        input = document.createElement("textarea");
-        input.value = recordData.record[field.name] || "";
-      } else if (fieldType === "select") {
-        input = document.createElement("select");
-        // Populate select options if necessary
-      } else {
-        input = document.createElement("input");
-        input.type = fieldType;
-        input.value = recordData.record[field.name] || "";
-      }
-
-      input.name = field.name;
+      const input = this.createInput(field.name, fieldType, recordData.record[field.name] || "");
 
       formGroup.appendChild(label);
       formGroup.appendChild(input);
@@ -174,6 +158,15 @@ class RecordView extends HTMLElement {
     });
 
     return fragment;
+}
+
+
+  createInput(name, type, value) {
+    const input = document.createElement("input");
+    input.type = type;
+    input.name = name;
+    input.value = value;
+    return input;
   }
 
   getFieldType(field) {
@@ -194,11 +187,12 @@ class RecordView extends HTMLElement {
       formData[input.name] = input.value;
     });
 
-    console.log("RecordView: handle save: ", formData)
+    console.log("RecordView: handle save: ", formData);
 
     EventEmitter.emit(EVENT_USER_CLICKED_SAVE_BUTTON, {
-      tableName: this.tableName,
-      formData: formData,
+      table: this.table,
+      sysId: this.sysId,
+      data: formData
     });
   }
 }
