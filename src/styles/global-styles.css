@@ -20,6 +20,8 @@
     --primary-color     : var(--brand);         /* Directly represents the brand within the application. */
     --secondary-color   : var(--secondary);     /* For elements that are not primary but still need differentiation. */
     --hover-color       : var(--accent);        /* Good for hover effects to draw attention to interactive elements. */
+
+    --off-white         : #EFEFEF;
     --table-th-background   : var(--tertiary);
     --table-th-color        : var(--text-dimmed-light);
     --table-border          : var(--secondary);
@@ -37,4 +39,15 @@
 /*  #4c1e4fff; #6C79BD;  #6A65C5;  #E5E9FE;         */
 /*  #096BAFff; #0374C2ff; #1B6598ff;  #F2F4F6ff;   */
 
-
+/*
+#FFFFFF (White)
+#F7F7F7 (Very Light Gray)
+#EFEFEF (Light Gray)
+#E0E0E0 (Lighter Gray)
+#D0D0D0 (Soft Gray)
+#C0C0C0 (Light Silver)
+#B0B0B0 (Medium Light Gray)
+#A0A0A0 (Grayish Silver)
+#909090 (Medium Gray)
+#808080 (Standard Gray)
+*/
