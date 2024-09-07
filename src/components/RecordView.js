@@ -11,6 +11,8 @@ template.innerHTML = `
             font-family: "Poppins", sans-serif !important;
             width: 100%;
             padding: 10px;
+            box-sizing: border-box; /* Ensures padding is included in the height */
+
         }
         .header-row {
             display: flex;
@@ -76,11 +78,14 @@ template.innerHTML = `
         }
 
         input, textarea, select {
-            padding: 8px;
-            font-size: 0.9rem;
-            border: 1px solid var(--table-border);
-            border-radius: 5px;
-            background-color: var(--off-white);
+          border: 1px solid var(--table-border);
+          border-radius: 5px;
+          background-color: var(--off-white);
+          font-size: 0.9rem;
+          height: 36px;
+          padding: 6px 8px;
+          box-sizing: border-box;
+
         }
         button {
             margin-top: 15px;
@@ -192,6 +197,9 @@ class RecordView extends HTMLElement {
       if (field.type === "calendar_date_time" && value) {
         const date = new Date(value);
         input.value = date.toISOString().slice(0, 16); // Format to 'YYYY-MM-DDTHH:MM'
+
+        console.log("date original value: " + value)
+        console.log("date input    value: " + input.value)
       }
     }
 
@@ -245,10 +253,10 @@ class RecordView extends HTMLElement {
 
     // Check if the input value is different from the original data
     if (this.originalData[name] !== value) {
-      this.changedData[name] = value; // Store changed data
+      this.changedData[name] = value;
       this.isDirty = true;
     } else {
-      delete this.changedData[name]; // Remove from changed data if reverted
+      delete this.changedData[name];
       this.isDirty = Object.keys(this.changedData).length > 0;
     }
 
@@ -262,7 +270,7 @@ class RecordView extends HTMLElement {
     EventEmitter.emit(EVENT_USER_CLICKED_SAVE_BUTTON, {
       table: this.table,
       sysId: this.sysId,
-      data: this.changedData,
+      data: this.changedData
     });
 
     // Reset dirty state after save
