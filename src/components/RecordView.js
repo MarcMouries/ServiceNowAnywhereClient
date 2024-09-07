@@ -1,3 +1,4 @@
+// RecordView.js
 import { EventEmitter } from "../EventEmitter.ts";
 import { EVENT_USER_CLICKED_SAVE_BUTTON } from "../EventTypes";
 import { EVENT_SYS_FETCHED_SINGLE_RECORD } from "../EventTypes";
@@ -37,14 +38,14 @@ template.innerHTML = `
           padding: 6px 8px;
           transition: background-color 0.2s ease, color 0.2s ease;
       }
-      
+
       .actions button:disabled {
           background-color: var(--disabled-bg-color, #b0b0b0); /* Default disabled color */
           color: var(--disabled-text-color, #ffffff); /* Default disabled text color */
           cursor: not-allowed;
           opacity: 0.6;
       }
-      
+
         .form-container {
             padding: 15px;
             padding-bottom: 20px;
@@ -64,9 +65,16 @@ template.innerHTML = `
             font-weight: bold;
             color: var(--table-th-color);
         }
-        input:active {
-          border-color: red;
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--input-focus-border);
+            outline: none;
+            box-shadow: 0 0 5px var(--input-focus-border);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
         input, textarea, select {
             padding: 8px;
             font-size: 0.9rem;
@@ -149,15 +157,14 @@ class RecordView extends HTMLElement {
 
     // Build and append form fields
     recordData.schema.forEach((field) => {
-      const fieldType = this.getFieldType(field);
       const formGroup = document.createElement("div");
       formGroup.classList.add("form-group");
 
       const label = document.createElement("label");
       label.textContent = field.label;
 
-      const input = this.createInput(field.name, fieldType, recordData.record[field.name] || "");
-      
+      const input = this.createInput(field, recordData.record[field.name] || "");
+
       // Listen for input changes to detect dirty state
       input.addEventListener("input", (e) => {
         this.handleInputChange(e);
@@ -171,21 +178,64 @@ class RecordView extends HTMLElement {
     return fragment;
   }
 
-  createInput(name, type, value) {
-    const input = document.createElement("input");
-    input.type = type;
-    input.name = name;
-    input.value = value;
+  createInput(field, value) {
+    let input;
+
+    if (field.type === "reference" || field.type === "choice") {
+      input = this.createSelect(field, value);
+    } else {
+      input = document.createElement(field.type === "textarea" ? "textarea" : "input");
+      input.type = this.getFieldType(field);
+      input.value = value;
+
+      // datetime-local input formatting
+      if (field.type === "calendar_date_time" && value) {
+        const date = new Date(value);
+        input.value = date.toISOString().slice(0, 16); // Format to 'YYYY-MM-DDTHH:MM'
+      }
+    }
+
     return input;
+  }
+
+  createSelect(field, value) {
+    const select = document.createElement("select");
+    select.name = field.name;
+
+    const options = field.type === "reference" ? field.reference_values : field.choices;
+
+    // Populate the select dropdown with options
+    options.forEach((option) => {
+      const opt = document.createElement("option");
+      opt.value = field.type === "reference" ? option.sys_id : option.value;
+      opt.textContent = field.type === "reference" ? option.display_value : option.label;
+      if (opt.value === value) {
+        opt.selected = true;
+      }
+      select.appendChild(opt);
+    });
+
+    return select;
   }
 
   getFieldType(field) {
     const typeMap = {
-      string: "text",
-      integer: "number",
-      text: "textarea",
-      boolean: "checkbox",
-      // Add more mappings as needed
+      string: "text", // Short text
+      integer: "number", // Integer
+      text: "textarea", // Multi-line text
+      boolean: "checkbox", // Checkbox
+      calendar_date_time: "datetime-local", // Date and time
+      glide_date: "date", // Date only
+      glide_time: "time", // Time only
+      choice: "select", // Choice/dropdown
+      reference: "select", // You can use a custom implementation or dropdown for reference fields
+      decimal: "number", // Decimal
+      currency: "text", // Text (need to add formatting)
+      email: "email", // Email
+      phone_number: "tel", // Phone number
+      url: "url", // URL
+      password: "password", // Password field
+      glide_duration: "text", // Duration
     };
     return typeMap[field.type] || "text";
   }
@@ -212,7 +262,7 @@ class RecordView extends HTMLElement {
     EventEmitter.emit(EVENT_USER_CLICKED_SAVE_BUTTON, {
       table: this.table,
       sysId: this.sysId,
-      data: this.changedData
+      data: this.changedData,
     });
 
     // Reset dirty state after save
