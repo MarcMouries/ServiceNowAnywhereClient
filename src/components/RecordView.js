@@ -1,4 +1,3 @@
-// src/components/RecordView.js
 import { EventEmitter } from "../EventEmitter.ts";
 import { EVENT_USER_CLICKED_SAVE_BUTTON } from "../EventTypes";
 import { EVENT_SYS_FETCHED_SINGLE_RECORD } from "../EventTypes";
@@ -28,15 +27,24 @@ template.innerHTML = `
             margin-left: auto;
         }
         .actions button {
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: var(--border-radius);
-            color: var(--text-color);
-            cursor: pointer;
-            font-family: "Poppins", sans-serif !important;
-            font-size: 1rem;
-            padding: 6px 8px;
-        }
+          background-color: var(--primary-color);
+          border: none;
+          border-radius: var(--border-radius);
+          color: var(--text-color);
+          cursor: pointer;
+          font-family: "Poppins", sans-serif !important;
+          font-size: 1rem;
+          padding: 6px 8px;
+          transition: background-color 0.2s ease, color 0.2s ease;
+      }
+      
+      .actions button:disabled {
+          background-color: var(--disabled-bg-color, #b0b0b0); /* Default disabled color */
+          color: var(--disabled-text-color, #ffffff); /* Default disabled text color */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      
         .form-container {
             padding: 15px;
             padding-bottom: 20px;
@@ -55,6 +63,9 @@ template.innerHTML = `
             font-size: 0.9rem;
             font-weight: bold;
             color: var(--table-th-color);
+        }
+        input:active {
+          border-color: red;
         }
         input, textarea, select {
             padding: 8px;
@@ -83,13 +94,14 @@ class RecordView extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.tableName = null;
     this.recordData = null;
+    this.originalData = null;
+    this.isDirty = false;
+    this.changedData = {};
     this.formContainer = this.shadowRoot.querySelector(".form-container");
-
   }
 
   connectedCallback() {
     console.log("RecordView component connected to the DOM");
-    // Listen for the fetched single record event
     EventEmitter.on(EVENT_SYS_FETCHED_SINGLE_RECORD, (payload) => {
       console.log("RecordView received payload: ", payload);
       this.displayRecord(payload.table, payload.recordData);
@@ -102,13 +114,11 @@ class RecordView extends HTMLElement {
       return;
     }
 
-    console.log("displayRecord this.formContainer: ", this.formContainer);
-
     this.table = table;
     this.sysId = recordData.record.sys_id;
+    this.originalData = { ...recordData.record }; // Clone original data
 
     // Clear existing content in the form container
-    // const formContainer = this.shadowRoot.querySelector(".form-container");
     this.formContainer.innerHTML = "";
 
     // Create header and save button
@@ -117,17 +127,14 @@ class RecordView extends HTMLElement {
     headerRow.innerHTML = `
         <h2>${table.label}</h2> 
         <div class="actions">
-            <button id="save_record">Save</button>
+            <button id="save_record" disabled>Save</button>
         </div>
     `;
-
     this.formContainer.appendChild(headerRow);
 
     const form = document.createElement("form");
-
     const builtForm = this.buildForm(table, recordData);
     form.appendChild(builtForm);
-
     this.formContainer.appendChild(form);
 
     // Add event listener for the save button
@@ -143,7 +150,6 @@ class RecordView extends HTMLElement {
     // Build and append form fields
     recordData.schema.forEach((field) => {
       const fieldType = this.getFieldType(field);
-
       const formGroup = document.createElement("div");
       formGroup.classList.add("form-group");
 
@@ -151,6 +157,11 @@ class RecordView extends HTMLElement {
       label.textContent = field.label;
 
       const input = this.createInput(field.name, fieldType, recordData.record[field.name] || "");
+      
+      // Listen for input changes to detect dirty state
+      input.addEventListener("input", (e) => {
+        this.handleInputChange(e);
+      });
 
       formGroup.appendChild(label);
       formGroup.appendChild(input);
@@ -158,8 +169,7 @@ class RecordView extends HTMLElement {
     });
 
     return fragment;
-}
-
+  }
 
   createInput(name, type, value) {
     const input = document.createElement("input");
@@ -180,20 +190,35 @@ class RecordView extends HTMLElement {
     return typeMap[field.type] || "text";
   }
 
-  handleSave() {
-    const formData = {};
-    const inputs = this.shadowRoot.querySelectorAll("input, textarea, select");
-    inputs.forEach((input) => {
-      formData[input.name] = input.value;
-    });
+  handleInputChange(e) {
+    const { name, value } = e.target;
 
-    console.log("RecordView: handle save: ", formData);
+    // Check if the input value is different from the original data
+    if (this.originalData[name] !== value) {
+      this.changedData[name] = value; // Store changed data
+      this.isDirty = true;
+    } else {
+      delete this.changedData[name]; // Remove from changed data if reverted
+      this.isDirty = Object.keys(this.changedData).length > 0;
+    }
+
+    // Enable or disable the Save button based on dirty state
+    this.shadowRoot.querySelector("#save_record").disabled = !this.isDirty;
+  }
+
+  handleSave() {
+    console.log("RecordView: handle save (only changed data): ", this.changedData);
 
     EventEmitter.emit(EVENT_USER_CLICKED_SAVE_BUTTON, {
       table: this.table,
       sysId: this.sysId,
-      data: formData
+      data: this.changedData
     });
+
+    // Reset dirty state after save
+    this.isDirty = false;
+    this.changedData = {};
+    this.shadowRoot.querySelector("#save_record").disabled = true;
   }
 }
 
