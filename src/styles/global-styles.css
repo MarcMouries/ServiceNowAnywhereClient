@@ -28,6 +28,7 @@
     --table-tr-color        : var(--text-dimmed-light);
     --table-tr-even         : var(--accent);
 
+    --input-focus-border : yellowgreen;
 
     --padding           : 10px;
     --border-radius     : 10px;
