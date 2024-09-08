@@ -186,7 +186,7 @@ class RecordView extends HTMLElement {
   createInput(field, value) {
     let input;
 
-    if (field.type === "reference" || field.type === "choice") {
+    if (field.type === "reference" || field.is_choice === true) {
       input = this.createSelect(field, value);
     } else {
       input = document.createElement(field.type === "textarea" ? "textarea" : "input");
