@@ -132,10 +132,29 @@ class ListView extends HTMLElement {
     let tableHeaders = tableData.schema.map((column) => `<th>${column.label}</th>`).join("");
 
     // Build table rows
-    let tableRows = tableData.records.map((record, index) => `
+    let tableRows = tableData.records.map((record, index) => {
+        return `
         <tr data-index="${index}" data-sys-id="${record.sys_id}">
-            ${tableData.schema.map((column) => `<td>${record[column.name] || ""}</td>`).join("")}
-        </tr>`).join("");
+            ${tableData.schema.map((column) => {
+                let value = record[column.name] || "";
+
+                // If the field is a reference, display the display value from reference_values
+                if (column.type === 'reference' && column.reference_values) {
+                    let referenceValue = column.reference_values.find(ref => ref.sys_id === value);
+                    value = referenceValue ? referenceValue.display_value : value;
+                }
+
+                // If the field is a choice, display the corresponding choice label
+                if (column.is_choice && column.choices) {
+                    let choiceValue = column.choices.find(choice => choice.value === value);
+                    value = choiceValue ? choiceValue.label : value;
+                }
+
+                // Return the table cell
+                return `<td>${value}</td>`;
+            }).join("")}
+        </tr>`;
+    }).join("");
 
     // Render the HTML table
     const contentDiv = this.shadowRoot.querySelector(".table-container");
@@ -164,6 +183,7 @@ class ListView extends HTMLElement {
         });
     });
   }
+
 }
 
 customElements.define("list-view", ListView);
