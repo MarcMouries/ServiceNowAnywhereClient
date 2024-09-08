@@ -85,9 +85,9 @@ template.innerHTML = `
           height: 36px;
           padding: 6px 8px;
           box-sizing: border-box;
-
         }
-        button {
+  
+       button {
             margin-top: 15px;
             padding: 8px 12px;
             background-color: var(--primary-color);
@@ -195,11 +195,9 @@ class RecordView extends HTMLElement {
 
       // datetime-local input formatting
       if (field.type === "calendar_date_time" && value) {
-        const date = new Date(value);
-        input.value = date.toISOString().slice(0, 16); // Format to 'YYYY-MM-DDTHH:MM'
+        // Convert the value to 'YYYY-MM-DDTHH:MM:SS' by replacing the space with 'T'
+        input.value = value.replace(' ', 'T');
 
-        console.log("date original value: " + value)
-        console.log("date input    value: " + input.value)
       }
     }
 
@@ -217,6 +215,7 @@ class RecordView extends HTMLElement {
       const opt = document.createElement("option");
       opt.value = field.type === "reference" ? option.sys_id : option.value;
       opt.textContent = field.type === "reference" ? option.display_value : option.label;
+
       if (opt.value === value) {
         opt.selected = true;
       }
