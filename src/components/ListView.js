@@ -173,8 +173,9 @@ class ListView extends HTMLElement {
 
     // Add event listeners for the button and table rows
     this.shadowRoot.querySelector("#add_new_record").addEventListener("click", () => {
-      EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD, table.name);
-    });
+        const sysId = -1;
+        EventEmitter.emit(EVENT_USER_CLICKED_NEW_RECORD, { table, sysId });
+      });
 
     this.shadowRoot.querySelectorAll('tbody tr').forEach(row => {
         row.addEventListener('click', () => {
