@@ -4,7 +4,7 @@ import { EventEmitter } from "../EventEmitter";
 import { EVENT_SYS_AUTHENTICATED_USER, EVENT_AUTH_FAILED, EVENT_SYS_FETCHED_USER_APPS } from "../EventTypes";
 
 export class NowDataSource extends DataSource {
-  async fetchData(url, authToken) {
+  async invokeRESTapi(url, authToken) {
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -30,6 +30,13 @@ export class NowDataSource extends DataSource {
     }
   }
 
+  getConnectionInfo() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
+    const { authToken, username } = user;
+    return { serviceNowUrl, authToken, username };
+  }
+
   async authenticateUser(username, password) {
     console.log("Using NowDataSource data source for authentication");
 
@@ -42,7 +49,7 @@ export class NowDataSource extends DataSource {
     const url = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_query=user_name=${username}&sysparm_fields=${encodeURIComponent(sysparm_fields)}&sysparm_limit=${sysparm_limit}`;
     console.log("url", url);
 
-    const data = await this.fetchData(url, credentials);
+    const data = await this.invokeRESTapi(url, credentials);
     if (data && data.result && data.result.length > 0) {
       const user = {
         name: data.result[0].name,
@@ -64,13 +71,11 @@ export class NowDataSource extends DataSource {
 
   async fetchUserApps() {
     console.log("Fetching apps the user has access to");
-    const user = JSON.parse(localStorage.getItem("user"));
-    const { username, authToken } = user;
-    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
+    const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
     const url = `${serviceNowUrl}/api/x_omni_server/service/user-apps-access?username=${username}`;
     console.log("Fetching user apps with URL:", url);
 
-    const data = await this.fetchData(url, authToken);
+    const data = await this.invokeRESTapi(url, authToken);
     if (data && data.result && Array.isArray(data.result)) {
       console.log("Fetched applications:", data.result);
       return data.result;
@@ -82,13 +87,11 @@ export class NowDataSource extends DataSource {
 
   async fetchTablesForApp(appScope) {
     console.log(`Fetching tables for app scope ${appScope}`);
-    const user = JSON.parse(localStorage.getItem("user"));
-    const { username, authToken } = user;
-    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
+    const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
     const url = `${serviceNowUrl}/api/x_omni_server/service/user-app-tables-access?username=${username}&app_scope=${appScope}`;
     console.log("Fetching user tables with URL:", url);
 
-    const data = await this.fetchData(url, authToken);
+    const data = await this.invokeRESTapi(url, authToken);
     if (data && data.result && Array.isArray(data.result)) {
       console.log("Fetched tables:", data.result);
       return data.result;
@@ -100,14 +103,10 @@ export class NowDataSource extends DataSource {
 
   async fetchListOfRecords(tableName) {
     console.log(`Fetching all records for table: ${tableName}`);
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    const { authToken } = user;
-    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
-
+    const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
     // Get table data (schema + records) in a single call
     const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}`;
-    const tableData = await this.fetchData(urlTableData, authToken);
+    const tableData = await this.invokeRESTapi(urlTableData, authToken);
     console.log("Fetched table data:", tableData);
 
     return tableData.result;
@@ -115,17 +114,18 @@ export class NowDataSource extends DataSource {
 
   async fetchSingleRecord(tableName, sysId) {
     console.log(`Fetching SingleRecord for table: ${tableName} and sysId ${sysId}`);
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    const { authToken } = user;
-    const serviceNowUrl = localStorage.getItem("serviceNowUrl");
-
+    const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
     // Get table data (schema + records) in a single call
     const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}?sys_id=${sysId}`;
-    const tableData = await this.fetchData(urlTableData, authToken);
+    const tableData = await this.invokeRESTapi(urlTableData, authToken);
     console.log("Fetched table data:", tableData);
 
     return tableData.result;
   }
-  
+
+  async updateRecord(table, sysId, data) {
+    console.log("NowDataSource: updateRecord", table, sysId, data);
+    const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
+    throw console.error("updateRecord method not implemented");
+  }
 }
