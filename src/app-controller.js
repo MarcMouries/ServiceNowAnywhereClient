@@ -115,6 +115,10 @@ class AppController {
       console.log("Controller: USER_CLICKED_NEW_RECORD: ", payload);
       const { table, sysId, data } = payload;
       console.log(`%cController: USER_CLICKED_NEW_RECORD: ${table.name}, sysId: ${sysId}`, "color: white; background: darkblue;");
+      const recordData = await dataService.fetchSingleRecord(table.name, sysId);
+      console.log(`%cController: fetched record data: `, recordData);
+      EventEmitter.emit("navigate", `/record/${payload.table.name}/${sysId}`, { table: payload.table, recordData });
+
     });
   }
 
