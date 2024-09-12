@@ -8,12 +8,14 @@
     "windows": [
       {
         "title": "ServiceNow Anywhere",
+        "label": "main",
         "width": 1400,
         "height": 1050,
-        "fullscreen": false,
-        "transparent": true,
         "decorations": true,
-        "resizable": true
+        "fullscreen": false,
+        "resizable": true,
+        "transparent": true,
+        "titleBarStyle": "Overlay"
       }
     ],
     "security": {
