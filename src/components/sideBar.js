@@ -5,7 +5,8 @@ import {
     EVENT_SYS_FETCHED_USER_APPS,
     EVENT_USER_CLICKED_ON_APP,
     EVENT_USER_CLICKED_ON_TABLE,
-    EVENT_SYS_FETCHED_USER_TABLES
+    EVENT_SYS_FETCHED_USER_TABLES,
+    EVENT_SYS_AUTHENTICATED_USER
 } from '../EventTypes.ts';
 import { EventEmitter } from '../EventEmitter.ts';
 
@@ -77,9 +78,13 @@ template.innerHTML = `
     .app-container.active .nested {
         display: block;
     }
+    .____user-avatar {
+        height: 40px;
+    }
 </style>
 
 <sideBar>
+    <user-avatar class="user-avatar" rounded></user-avatar>
     <div class="sidebar-content"></div>
 </sideBar>`;
 
@@ -94,14 +99,35 @@ class SideBar extends HTMLElement {
         // Add home item by default
         this.addItem('Home', 'fas fa-home', (div) => this.handleHomeClick(div), 'home');
 
+
+
+
+    }
+
+    connectedCallback() {
+
+        EventEmitter.on(EVENT_SYS_AUTHENTICATED_USER, (payload) => {
+            console.log("Sidebar: received event AUTHENTICATED_USER with payload: ", payload);
+            const { name, avatarURL } = payload;
+
+            const userAvatar = this.shadowRoot.querySelector('.user-avatar');
+            if (userAvatar) {
+                if (avatarURL) {
+                    userAvatar.setAttribute('src', avatarURL);
+                }
+                if (name) {
+                    userAvatar.setAttribute('name', name);
+                } 
+            }
+        });
+
         EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (payload) => {
-            console.log("Sidebar: received event with payload: ", payload);
+            console.log("Sidebar: received event FETCHED_USER_APPS with payload: ", payload);
             this.setUserAppsList(payload.appList);
         });
 
-
         EventEmitter.on(EVENT_SYS_FETCHED_USER_TABLES, (payload) => {
-            console.log("Sidebar: Updating table list with payload: ", payload);
+            console.log("Sidebar: received event FETCHED_USER_TABLES with payload: ", payload);
             this.setTables(payload.app, payload.tableList);
         });
 
