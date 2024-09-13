@@ -43,20 +43,26 @@ export class NowDataSource extends DataSource {
     const { serviceNowUrl } = window.OMNI.config;
     const credentials = btoa(`${username}:${password}`);
     const tableName = "sys_user";
-    const sysparm_fields = "name,email,sys_id";
+    const sysparm_fields = "sys_id,name,email,avatar";
     const sysparm_limit = 1;
 
     const url = `${serviceNowUrl}/api/now/table/${tableName}?sysparm_query=user_name=${username}&sysparm_fields=${encodeURIComponent(sysparm_fields)}&sysparm_limit=${sysparm_limit}`;
     console.log("url", url);
 
-    const data = await this.invokeRESTapi(url, credentials);
-    if (data && data.result && data.result.length > 0) {
+    const response = await this.invokeRESTapi(url, credentials);
+    if (response && response.result && response.result.length > 0) {
+      const result = response.result[0];
+
+      //https://marco.service-now.com/5dbec626fb641a907b04ff4655efdc76.iix?t=small
+      const avatarURL = `${serviceNowUrl}/${result.avatar}.iix?t=small`;
+
       const user = {
-        name: data.result[0].name,
+        name: result.name,
         username: username,
-        email: data.result[0].email,
-        sys_id: data.result[0].sys_id,
+        email: result.email,
+        sys_id: result.sys_id,
         authToken: credentials,
+        avatarURL: avatarURL
       };
       console.log("User data:", user);
 
@@ -75,10 +81,10 @@ export class NowDataSource extends DataSource {
     const url = `${serviceNowUrl}/api/x_omni_server/service/user-apps-access?username=${username}`;
     console.log("Fetching user apps with URL:", url);
 
-    const data = await this.invokeRESTapi(url, authToken);
-    if (data && data.result && Array.isArray(data.result)) {
-      console.log("Fetched applications:", data.result);
-      return data.result;
+    const response = await this.invokeRESTapi(url, authToken);
+    if (response && response.result && Array.isArray(response.result)) {
+      console.log("Fetched applications:", response.result);
+      return response.result;
     } else {
       console.error("Unexpected data format or no apps found");
       return [];
@@ -91,10 +97,10 @@ export class NowDataSource extends DataSource {
     const url = `${serviceNowUrl}/api/x_omni_server/service/user-app-tables-access?username=${username}&app_scope=${appScope}`;
     console.log("Fetching user tables with URL:", url);
 
-    const data = await this.invokeRESTapi(url, authToken);
-    if (data && data.result && Array.isArray(data.result)) {
-      console.log("Fetched tables:", data.result);
-      return data.result;
+    const response = await this.invokeRESTapi(url, authToken);
+    if (response && response.result && Array.isArray(response.result)) {
+      console.log("Fetched tables:", response.result);
+      return response.result;
     } else {
       console.error("Unexpected data format or no tables found");
       return [];
@@ -105,22 +111,23 @@ export class NowDataSource extends DataSource {
     console.log(`Fetching all records for table: ${tableName}`);
     const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
     // Get table data (schema + records) in a single call
-    const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}`;
-    const tableData = await this.invokeRESTapi(urlTableData, authToken);
-    console.log("Fetched table data:", tableData);
+    const url = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}`;
+    const response = await this.invokeRESTapi(url, authToken);
+    console.log("Fetched table data:", response);
 
-    return tableData.result;
+    return response.result;
   }
 
   async fetchSingleRecord(tableName, sysId) {
     console.log(`Fetching SingleRecord for table: ${tableName} and sysId ${sysId}`);
     const { serviceNowUrl, authToken, username } = this.getConnectionInfo();
     // Get table data (schema + records) in a single call
-    const urlTableData = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}?sys_id=${sysId}`;
-    const tableData = await this.invokeRESTapi(urlTableData, authToken);
-    console.log("Fetched table data:", tableData);
+    const url = `${serviceNowUrl}/api/x_omni_server/service/data/${tableName}?sys_id=${sysId}`;
+    const response = await this.invokeRESTapi(url, authToken);
+    console.log("Fetched table data:", response);
+    console.log("Fetched table data JSON = " + JSON.stringify(response, null, 2));
 
-    return tableData.result;
+    return response.result;
   }
 
   async updateRecord(table, sysId, data) {
