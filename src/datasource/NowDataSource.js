@@ -53,8 +53,9 @@ export class NowDataSource extends DataSource {
     if (response && response.result && response.result.length > 0) {
       const result = response.result[0];
 
-      //https://marco.service-now.com/5dbec626fb641a907b04ff4655efdc76.iix?t=small
-      const avatarURL = `${serviceNowUrl}/${result.avatar}.iix?t=small`;
+      //https://instance.service-now.com/5dbec626fb641a907b04ff4655efdc76.iix?t=small
+      const avatarURL = result.avatar
+      ? `${serviceNowUrl}/${result.avatar}.iix?t=small` : '';
 
       const user = {
         name: result.name,
