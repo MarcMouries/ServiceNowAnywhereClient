@@ -4,8 +4,6 @@ class Avatar extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
 
-    this.classList.add('user-avatar');
-
     this.render();
   }
 
@@ -13,11 +11,30 @@ class Avatar extends HTMLElement {
     return ['src', 'name', 'rounded'];
   }
 
+  connectedCallback() {
+    if (!this.classList.contains('user-avatar')) {
+      this.classList.add('user-avatar');
+    }
+
+  }
+
   attributeChangedCallback(name, oldValue, newValue) {
     // Only re-render if the attribute value has actually changed
     if (oldValue !== newValue) {
       this.render();
     }
+  }
+
+  getSizeClass() {
+    const size = this.getAttribute('size') || 'md'; // Default to 'md' if size not set
+    const sizes = {
+      sm: 'width: 24px; height: 24px;',
+      md: 'width: 32px; height: 32px;',
+      lg: 'width: 40px; height: 40px;',
+      xl: 'width: 80px; height: 80px;',
+      none: ''
+    };
+    return sizes[size];
   }
 
   // Method to extract initials from the name
@@ -36,7 +53,7 @@ class Avatar extends HTMLElement {
     const imgSrc = this.getAttribute('src');
     const name = this.getAttribute('name') || '';
     const alt = name || 'User Avatar';
-    const rounded = this.hasAttribute('rounded');
+    const rounded = true;//this.hasAttribute('rounded');
 
     // Create wrapper
     const wrapper = document.createElement('div');
@@ -47,8 +64,6 @@ class Avatar extends HTMLElement {
     style.textContent = `
       .avatar-wrapper {
         position: relative;
-        width: 40px;
-        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -58,6 +73,7 @@ class Avatar extends HTMLElement {
         font-size: 16px;
         overflow: hidden;
         ${rounded ? 'border-radius: 50%;' : ''}
+        ${this.getSizeClass()} 
       }
       .avatar-wrapper img {
         width: 100%;
