@@ -1,7 +1,11 @@
+// src/components/Avatar.js
 class Avatar extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+
+    this.classList.add('user-avatar');
+
     this.render();
   }
 
@@ -50,7 +54,7 @@ class Avatar extends HTMLElement {
         justify-content: center;
         background-color: #ccc;
         color: #fff;
-        font-weight: bold;
+        font-weight: 400;
         font-size: 16px;
         overflow: hidden;
         ${rounded ? 'border-radius: 50%;' : ''}
