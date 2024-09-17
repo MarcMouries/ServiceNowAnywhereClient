@@ -2,11 +2,8 @@
 
 import { LOG_STYLE } from "../LogStyles";
 import { 
-    EVENT_SYS_FETCHED_USER_APPS,
     EVENT_USER_CLICKED_ON_APP,
-    EVENT_USER_CLICKED_ON_TABLE,
-    EVENT_SYS_FETCHED_USER_TABLES,
-    EVENT_SYS_AUTHENTICATED_USER
+    EVENT_USER_CLICKED_ON_TABLE
 } from '../EventTypes.ts';
 import { EventEmitter } from '../EventEmitter.ts';
 
@@ -98,39 +95,9 @@ class SideBar extends HTMLElement {
 
         // Add home item by default
         this.addItem('Home', 'fas fa-home', (div) => this.handleHomeClick(div), 'home');
-
-
-
-
     }
 
     connectedCallback() {
-
-        EventEmitter.on(EVENT_SYS_AUTHENTICATED_USER, (payload) => {
-            console.log("Sidebar: received event AUTHENTICATED_USER with payload: ", payload);
-            const { name, avatarURL } = payload;
-
-            const userAvatar = this.shadowRoot.querySelector('.user-avatar');
-            if (userAvatar) {
-                if (avatarURL) {
-                    userAvatar.setAttribute('src', avatarURL);
-                }
-                if (name) {
-                    userAvatar.setAttribute('name', name);
-                } 
-            }
-        });
-
-        EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (payload) => {
-            console.log("Sidebar: received event FETCHED_USER_APPS with payload: ", payload);
-            this.setUserAppsList(payload.appList);
-        });
-
-        EventEmitter.on(EVENT_SYS_FETCHED_USER_TABLES, (payload) => {
-            console.log("Sidebar: received event FETCHED_USER_TABLES with payload: ", payload);
-            this.setTables(payload.app, payload.tableList);
-        });
-
     }
 
     static get observedAttributes() {
@@ -178,15 +145,15 @@ class SideBar extends HTMLElement {
         });
     }
 
-    setTables(app, tableList) {
+    setTables(app, itemList) {
         console.log("Sidebar: setTables with app: ", app);
-        console.log("Sidebar: setTables with tableList: ", tableList);
+        console.log("Sidebar: setTables with tableList: ", itemList);
         const appContainer = this.shadowRoot.querySelector(`.app-container[data-app-scope="${app.appScope}"]`);
         if (!appContainer) return;
         const nestedDiv = appContainer.querySelector('.nested');
         nestedDiv.innerHTML = '';
-        tableList.forEach((table) => {
-            this.addItem(table.label, 'fas fa-table', (div) => this.handleTableClick(div, table), 'table', nestedDiv);
+        itemList.forEach((item) => {
+            this.addItem(item.label, 'fas fa-table', (div) => this.handleTableClick(div, item), 'table', nestedDiv);
 
 
         });
@@ -195,8 +162,10 @@ class SideBar extends HTMLElement {
     handleHomeClick(div) {
         this.updateActiveClass(div, 'home-item');
         console.log(`%cSideBar: Handling home click, redirect to ${this.homeLocation}`, 'color: white; background: darkblue;');
-        history.pushState(null, '', this.homeLocation);
-        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, { appName: "home" });
+        //history.pushState(null, '', this.homeLocation);
+        //EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, { appName: "home" });
+        this.dispatchEvent(new CustomEvent('home-click', { detail: { homeLocation: this.homeLocation } }));
+
     }
 
     handleAppClick(div, appContainer, app) {
