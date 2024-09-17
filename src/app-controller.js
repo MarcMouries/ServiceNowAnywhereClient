@@ -50,9 +50,26 @@ class AppController {
             if (sideBar) {
               this.sideBar = sideBar;
               // Add the event listener for the 'home-click' event
-              sideBar.addEventListener("home-click", (event) => {
-                console.log("Home clicked event received in AppController");
-                console.log("Home location: ", event.detail.homeLocation);
+              sideBar.addEventListener("sidebar-item-click", (event) => {
+                const { type, location, app, table } = event.detail;
+                console.log("Controller: Sidebar item clicked:", type);
+                switch (type) {
+                  case "home":
+                    console.log("Controller: Redirecting to home location:", location);
+                    // Handle home click (e.g., navigate to home)
+                    break;
+                  case "app":
+                    console.log("Controller: App clicked:", app);
+                    // Handle app click (e.g., load the app's tables)
+                    break;
+                  case "table":
+                    console.log("Controller: Table clicked:", table);
+                    // Handle table click (e.g., display the table's content)
+                    break;
+                  default:
+                    console.log("Controller: Unknown item type:", type);
+                    break;
+                }
               });
             }
             const tauriToolbar = document.querySelector("div[data-tauri-decorum-tb]");
@@ -115,8 +132,6 @@ class AppController {
       }
     });
 
-
-    
     EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (payload) => {
       console.log("AppController: received event FETCHED_USER_APPS with payload: ", payload);
       if (this.sideBar) {
@@ -131,8 +146,8 @@ class AppController {
       if (this.sideBar) {
         this.sideBar.setTables(payload.app, payload.tableList);
       }
-  });    
-    
+    });
+
     EventEmitter.on(EVENT_AUTH_FAILED, (message) => {
       document.getElementById("error-msg").textContent = message;
     });
