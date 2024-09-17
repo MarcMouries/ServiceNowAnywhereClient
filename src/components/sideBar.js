@@ -164,21 +164,29 @@ class SideBar extends HTMLElement {
         console.log(`%cSideBar: Handling home click, redirect to ${this.homeLocation}`, 'color: white; background: darkblue;');
         //history.pushState(null, '', this.homeLocation);
         //EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, { appName: "home" });
-        this.dispatchEvent(new CustomEvent('home-click', { detail: { homeLocation: this.homeLocation } }));
-
+        this.dispatchEvent(new CustomEvent('sidebar-item-click', {
+            detail: { type: 'home', location: this.homeLocation }
+        }));
     }
 
     handleAppClick(div, appContainer, app) {
         this.updateActiveClass(div, 'app-item');
         console.log(`%cSideBar: Handling app click: ${app.appName} with scope: ${app.appScope}`, 'color: white; background: darkblue;');
-        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, app);
         appContainer.classList.toggle('active');
+
+        EventEmitter.emit(EVENT_USER_CLICKED_ON_APP, app);
+        this.dispatchEvent(new CustomEvent('sidebar-item-click', {
+            detail: { type: 'app', app: app }
+        }));
     }
 
     handleTableClick(div, table) {
         this.updateActiveClass(div, 'table-item');
         console.log(`%cSideBar: Handling table click: ${table.label} (${table.name})`, 'color: white; background: darkblue;');
         EventEmitter.emit(EVENT_USER_CLICKED_ON_TABLE, { table });
+        this.dispatchEvent(new CustomEvent('sidebar-item-click', {
+            detail: { type: 'table', table: table }
+        }));
     }
 
     updateActiveClass(activeDiv, itemType) {
