@@ -26,19 +26,61 @@ class AppController {
     }
 
     // Initialize once
+    this.sideBar = null;
     this.model = this.initializeModel();
     this.initializeDataSource();
     this.initializeEventListeners();
 
+    this.observeAppView(); // Start observing for the app-view element
+
     AppController.instance = this;
   }
 
-    // Initialize the model
-    initializeModel() {
-      window.OMNI = window.OMNI || {};
-      window.OMNI.model = new Model();
-      return window.OMNI.model;
-    }
+  observeAppView() {
+    // Create a MutationObserver to watch for the app-view element
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          const appView = document.querySelector("app-view");
+          if (appView) {
+            console.log("observeAppView FOUND appView");
+            const sideBar = appView.shadowRoot.querySelector("side-bar");
+            console.log("observeAppView FOUND sideBar", sideBar);
+
+            if (sideBar) {
+              this.sideBar = sideBar;
+              // Add the event listener for the 'home-click' event
+              sideBar.addEventListener("home-click", (event) => {
+                console.log("Home clicked event received in AppController");
+                console.log("Home location: ", event.detail.homeLocation);
+              });
+            }
+            const tauriToolbar = document.querySelector("div[data-tauri-decorum-tb]");
+            if (tauriToolbar) {
+              const { name, avatarURL } = window.OMNI.model.user;
+              const userAvatar = document.createElement("user-avatar");
+              userAvatar.setAttribute("name", name);
+              userAvatar.setAttribute("src", avatarURL);
+              tauriToolbar.appendChild(userAvatar);
+            } else {
+              console.log("Tauri Toolbar not found");
+            }
+
+            observer.disconnect(); // Stop observing once app-view is found
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // Initialize the model
+  initializeModel() {
+    window.OMNI = window.OMNI || {};
+    window.OMNI.model = new Model();
+    return window.OMNI.model;
+  }
 
   // Initialize the data source
   initializeDataSource() {
@@ -63,7 +105,6 @@ class AppController {
       console.log(`%c⑥ Controller: Apps fetched for user: ${user.name} = ${appNames.join(", ")}`, LOG_STYLE);
       this.model.setUserAppsList(userAppsList);
 
-
       console.log(`%c⑦ Controller: Current location ${window.location.href}`, LOG_STYLE);
       EventEmitter.emit(EVENT_SYS_FETCHED_USER_APPS, { appList: userAppsList });
 
@@ -74,6 +115,24 @@ class AppController {
       }
     });
 
+
+    
+    EventEmitter.on(EVENT_SYS_FETCHED_USER_APPS, (payload) => {
+      console.log("AppController: received event FETCHED_USER_APPS with payload: ", payload);
+      if (this.sideBar) {
+        this.sideBar.setUserAppsList(payload.appList);
+      } else {
+        console.error("AppController: sideBar reference is not set yet.");
+      }
+    });
+
+    EventEmitter.on(EVENT_SYS_FETCHED_USER_TABLES, (payload) => {
+      console.log("AppController: received event FETCHED_USER_TABLES with payload: ", payload);
+      if (this.sideBar) {
+        this.sideBar.setTables(payload.app, payload.tableList);
+      }
+  });    
+    
     EventEmitter.on(EVENT_AUTH_FAILED, (message) => {
       document.getElementById("error-msg").textContent = message;
     });
@@ -118,7 +177,6 @@ class AppController {
       const recordData = await dataService.fetchSingleRecord(table.name, sysId);
       console.log(`%cController: fetched record data: `, recordData);
       EventEmitter.emit("navigate", `/record/${payload.table.name}/${sysId}`, { table: payload.table, recordData });
-
     });
   }
 
