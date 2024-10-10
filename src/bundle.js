@@ -1,7 +1,9 @@
+import './components/Avatar.js';
 import './components/online-status.js';
 import './components/sideBar.js';
 import './components/ListView.js';
-import './components/RecordView';
+import './components/RecordView.js';
+
 import './components/router';
 import './app-model.js';
 import './app-view.js';
