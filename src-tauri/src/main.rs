@@ -4,6 +4,9 @@
 use dotenv::dotenv;
 use std::env;
 use std::path::Path;
+use tauri::Manager;
+use tauri_plugin_decorum::WebviewWindowExt; // adds helper methods to WebviewWindow
+
 //use tauri::{TitleBarStyle, WebviewUrl, WebviewWindowBuilder};
 
 mod date_util;
@@ -28,10 +31,10 @@ fn load_env() -> String {
 }
 
 #[tauri::command]
-fn initialize_app() -> Result<(String, String, String, String, String, String), String> {
+fn initialize_app() -> Result<(String, String, String, String), String> {
     let running_mode = load_env();
-    let client_id = env::var("CLIENT_ID").map_err(|e| e.to_string())?;
-    let client_secret = env::var("CLIENT_SECRET").map_err(|e| e.to_string())?;
+    //let client_id = env::var("CLIENT_ID").map_err(|e| e.to_string())?;
+    //let client_secret = env::var("CLIENT_SECRET").map_err(|e| e.to_string())?;
     let redirect_uri = env::var("REDIRECT_URI").map_err(|e| e.to_string())?;
     let service_now_url = env::var("SERVICENOW_URL").map_err(|e| e.to_string())?;
     let username = env::var("USERNAME").unwrap_or_default();
@@ -48,8 +51,8 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
     );
     println!("{:<LABEL_WIDTH$}{}", "Running mode:", running_mode);
 
-    println!("{:<LABEL_WIDTH$}{}", "CLIENT_ID:", client_id);
-    println!("{:<LABEL_WIDTH$}{}", "CLIENT_SECRET:", client_secret);
+    //println!("{:<LABEL_WIDTH$}{}", "CLIENT_ID:", client_id);
+    //println!("{:<LABEL_WIDTH$}{}", "CLIENT_SECRET:", client_secret);
     println!("{:<LABEL_WIDTH$}{}", "REDIRECT_URI:", redirect_uri);
     println!("{:<LABEL_WIDTH$}{}", "SERVICENOW_URL:", service_now_url);
     println!("{:<LABEL_WIDTH$}{}", "USERNAME:", username);
@@ -63,8 +66,6 @@ fn initialize_app() -> Result<(String, String, String, String, String, String), 
     println!("────────────────────────────────────────────────────────────────────────");
 
     Ok((
-        client_id,
-        client_secret,
         redirect_uri,
         service_now_url,
         username,
@@ -90,8 +91,31 @@ fn main() {
 
 fn main() {
     tauri::Builder::default()
-        .setup(|app| Ok(()))
+        .plugin(tauri_plugin_decorum::init()) // initialize the decorum plugin
         .plugin(tauri_plugin_shell::init())
+
+		.setup(|app| {
+			// Create a custom titlebar for main window
+			// On Windows this hides decoration and creates custom window controls
+			// On macOS it needs hiddenTitle: true and titleBarStyle: overlay
+			let main_window = app.get_webview_window("main").unwrap();
+			main_window.create_overlay_titlebar().unwrap();
+
+			// Some macOS-specific helpers
+			#[cfg(target_os = "macos")] {
+				// Set a custom inset to the traffic lights
+				main_window.set_traffic_lights_inset(12.0, 16.0).unwrap();
+
+				// Make window transparent without privateApi
+                main_window.make_transparent().unwrap();
+
+				// Set window level
+				// NSWindowLevel: https://developer.apple.com/documentation/appkit/nswindowlevel
+                //main_window.set_window_level(25).unwrap();
+			}
+
+			Ok(())
+		})
         .invoke_handler(tauri::generate_handler![greet, initialize_app])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
