@@ -1,5 +1,5 @@
 // src/components/app-view.js
-import { initializeApp } from "./app-controller";
+import appController from './app-controller';
 import { LOG_STYLE } from "./LogStyles.ts";
 import { EventEmitter } from "./EventEmitter.ts";
 import Router from "./components/router";
@@ -14,6 +14,7 @@ template.innerHTML = `
   }
   side-bar {
       width: 20%;
+      padding-top: var(--title-bar-height);
   }
   main {
       background: slategray;
@@ -24,9 +25,11 @@ template.innerHTML = `
   display: none;
 }
 
+
 </style>
 
 <side-bar home-location="./workspace.html"></side-bar>
+
 <main></main>`;
 
 // <list-view></list-view>
@@ -42,7 +45,16 @@ class AppView extends HTMLElement {
   connectedCallback() {
     console.log("%c⑨ App View connected", LOG_STYLE);
     console.log("%c⑩ Calling initializeApp", LOG_STYLE);
-    initializeApp();
+    appController.initializeApp();
+
+    const tauriToolbar = document.querySelector('div[data-tauri-decorum-tb]');
+    if (tauriToolbar) {
+      console.log( "found tauriToolbar");
+    }
+    else {
+      console.log( "NOT found tauriToolbar");
+
+    }
 
 
     const routes = {
