@@ -8,12 +8,11 @@
     "build": "bun build ./src/bundle.js --outfile=./dist/bundle.js && bun run copy-assets.js"
   },
   "dependencies": {
-    "@tauri-apps/api": ">=2.0",
-    "@tauri-apps/plugin-shell": ">=2.0"
+    "@tauri-apps/api": "^2.2.0",
+    "@tauri-apps/plugin-shell": "^2.2.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": ">=2.0",
-    "@happy-dom/global-registrator": "^15.7.3"
-
+    "@tauri-apps/cli": "^2.2.1",
+    "@happy-dom/global-registrator": "^15.11.7"
   }
 }
