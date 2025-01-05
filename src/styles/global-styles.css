@@ -54,3 +54,10 @@
 #909090 (Medium Gray)
 #808080 (Standard Gray)
 */
+
+/* Styling for Tauri window decoration  */
+
+div[data-tauri-decorum-tb] {
+    background-color: #122236!important;
+    height: 36px;
+}

@@ -8,12 +8,6 @@ html {
   overflow: hidden;
 }
 
-div[data-tauri-decorum-tb] {
-  background-color: blueviolet!important;
-}
-
-
-
 body {
   display: flex;
   height: 100vh;
