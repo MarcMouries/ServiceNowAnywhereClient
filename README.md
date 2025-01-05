@@ -43,8 +43,14 @@
    bun install
    ```
 
+## Run the project
 
-# update project
+   ```shell
+   bun run build
+   bun tauri dev
+   ```
+
+## Update the project
 To run cargo upgrade, make sure to install cargo edit
 ```shell
 bun install @tauri-apps/cli@next @tauri-apps/api@next
