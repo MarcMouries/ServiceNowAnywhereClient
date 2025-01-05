@@ -17,7 +17,6 @@ template.innerHTML = `
       padding-top: var(--title-bar-height);
   }
   main {
-      background: slategray;
       display: flex;
       width: 80%;
 }
