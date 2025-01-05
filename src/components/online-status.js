@@ -8,33 +8,36 @@ class OnlineStatus extends HTMLElement {
 
     const iconFA = document.createElement('i'); // font awesome
 
-    const icon = document.createElement('img');
+    //const icon = document.createElement('img');
     const text = document.createElement('span');
 
     wrapper.appendChild(iconFA);
-    wrapper.appendChild(icon);
+    //wrapper.appendChild(icon);
     wrapper.appendChild(text);
     this.shadowRoot.appendChild(wrapper);
+
+    const color = this.getAttribute('color') || '#ccc'; // Default color if not set
 
     const style = document.createElement('style');
     style.textContent = `
     @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
     .online-status {
-        display: flex;
         align-items: center;
+        display: flex;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        color: ${color};
+        font-size: small;
         position: fixed;
         top: 10px;
         right: 10px;
-        background: white;
         padding: 5px 10px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
         z-index: 1000;
       }
       .online-status img {
         margin-right: 5px;
-        width: 20px; /* Adjust size as needed */
-        height: 20px; /* Adjust size as needed */
+        width: 20px;
+        height: 20px;
       }
     `;
     this.shadowRoot.appendChild(style);
@@ -55,16 +58,16 @@ class OnlineStatus extends HTMLElement {
     const isOnline = navigator.onLine;
     const iconFA = this.shadowRoot.querySelector('i');
 
-    const icon = this.shadowRoot.querySelector('img');
+    //const icon = this.shadowRoot.querySelector('img');
     const text = this.shadowRoot.querySelector('span');
 
     if (isOnline) {
       iconFA.setAttribute('class', 'fas fa-wifi');
-      icon.src = '/assets/wifi.svg';
+      //icon.src = '/assets/wifi.svg';
       text.textContent = 'You are currently online';
     } else {
       iconFA.setAttribute('class', 'fas fa-wifi-slash');
-      icon.src = '/assets/wifi-slashed.svg';
+      //icon.src = '/assets/wifi-slashed.svg';
       text.textContent = 'You are currently offline';
     }
   }
