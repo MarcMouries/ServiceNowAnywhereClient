@@ -8,7 +8,7 @@ class Avatar extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['src', 'name', 'rounded'];
+    return ['src', 'name', 'rounded', 'color'];
   }
 
   connectedCallback() {
@@ -54,6 +54,7 @@ class Avatar extends HTMLElement {
     const name = this.getAttribute('name') || '';
     const alt = name || 'User Avatar';
     const rounded = true;//this.hasAttribute('rounded');
+    const background_color = this.getAttribute('background-color') || '#ccc'; // Default color if not set
 
     // Create wrapper
     const wrapper = document.createElement('div');
@@ -63,11 +64,11 @@ class Avatar extends HTMLElement {
     const style = document.createElement('style');
     style.textContent = `
       .avatar-wrapper {
-        position: relative;
-        display: flex;
         align-items: center;
+        display: flex;
+        position: relative;
         justify-content: center;
-        background-color: #ccc;
+        background-color: ${background_color};
         color: #fff;
         font-weight: 400;
         font-size: 16px;
